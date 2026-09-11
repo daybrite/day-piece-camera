@@ -72,7 +72,7 @@ objc2 = { version = "0.6", optional = true }
 objc2-ui-kit = { version = "0.3", optional = true, features = ["UIView", "UIResponder"] }
 
 [build-dependencies]
-# Compiles ohos/native/day_camera.cpp against the OpenHarmony sysroot for the arkui arm only.
+# Compiles platform/harmony/native/day_camera.cpp against the OpenHarmony sysroot for the arkui arm only.
 cc = { version = "1", optional = true }
 
 [dev-dependencies]
@@ -81,7 +81,7 @@ day-mock = { git = "https://github.com/daybrite/day.git" }
 # --- Android backend contribution ---
 # The day CLI reads this from `cargo metadata` and folds it into the app's Gradle build.
 [package.metadata.day.android]
-java = ["android/java"]
+java = ["platform/android/java"]
 # CameraX: the camera2 backend, lifecycle binding, and the PreviewView widget.
 gradle-dependencies = [
     "androidx.camera:camera-core:1.5.1",
@@ -94,11 +94,11 @@ gradle-dependencies = [
 # `day build` (ios-uikit) reads this from `cargo metadata`, compiles the `swift` shim sources into
 # a generated local SwiftPM package, and links the frameworks into the app.
 [package.metadata.day.ios]
-swift = ["ios/swift"]
+swift = ["platform/ios/swift"]
 frameworks = ["AVFoundation"]
 
 # --- HarmonyOS backend contribution ---
 # The ArkTS half: the XComponent surface the NDK camera renders its preview into. `day build`
 # stages it into the app's hvigor project; the C half is compiled by build.rs.
 [package.metadata.day.ohos]
-ets = ["ohos/ets"]
+ets = ["platform/harmony/ets"]

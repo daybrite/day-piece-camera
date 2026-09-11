@@ -3,7 +3,7 @@
 
 // ---------------------------------------------------------------------------
 // UIKit: an AVFoundation capture session behind a preview view, created by this crate's Swift
-// shim (ios/swift/DayCamera.swift → the generated DayPieces SwiftPM package). AVFoundation is
+// shim (platform/ios/swift/DayCamera.swift → the generated DayPieces SwiftPM package). AVFoundation is
 // delegate-heavy, which is what makes Swift the right side for it; Rust owns the returned
 // +1-retained UIView, sends the commands, and receives the reports through the C callback it
 // hands the shim at creation.

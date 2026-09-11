@@ -5,7 +5,7 @@
 // THIS crate and folded into the app's Gradle build via [package.metadata.day.android] (which
 // also declares the CameraX dependencies), with ZERO edits to day-android. It uses only
 // day-android's PUBLIC surface: DayBridge.ctx (the Context) and DayBridge.nativeOnEvent (the
-// event trampoline). It is the Android twin of ios/swift/DayCamera.swift.
+// event trampoline). It is the Android twin of platform/ios/swift/DayCamera.swift.
 package dev.daybrite.day.piece.camera;
 
 import android.content.Context;

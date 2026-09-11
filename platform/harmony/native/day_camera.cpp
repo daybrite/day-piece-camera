@@ -6,9 +6,9 @@
 // native library. C++ only because the camera headers pull in `rawfile/raw_file.h`, which the
 // SDK writes with a C++ reference parameter; the shim itself is plain C with a C ABI. lib-arkui.rs calls the flat API below and receives reports through the
 // callback it hands over at creation. The preview renders into the XComponent surface the
-// crate's ArkTS half (ohos/ets/Index.ets) reports; each capture is the photo output's main
+// crate's ArkTS half (platform/harmony/ets/Index.ets) reports; each capture is the photo output's main
 // image, written as a JPEG into the app's cache directory. It is the HarmonyOS twin of
-// ios/swift/DayCamera.swift and android/java/DayCamera.java.
+// platform/ios/swift/DayCamera.swift and platform/android/java/DayCamera.java.
 
 #include <cstdint>
 #include <cstdio>

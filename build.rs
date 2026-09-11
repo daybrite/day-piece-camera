@@ -1,14 +1,14 @@
 // Copyright © The Daybrite Project
 // SPDX-License-Identifier: MPL-2.0
 
-//! Compile the HarmonyOS camera shim (ohos/native/day_camera.cpp) with the OpenHarmony NDK's clang
+//! Compile the HarmonyOS camera shim (platform/harmony/native/day_camera.cpp) with the OpenHarmony NDK's clang
 //! and link the camera and image libraries. Only for a `*-linux-ohos` target with the `arkui`
 //! feature; a no-op everywhere else, so a host build never needs the NDK. The NDK path comes from
 //! `OHOS_NDK_HOME` (the SDK's `native` directory), which the `day` CLI sets when it builds the
 //! HarmonyOS target — the same variable day-arkui-sys reads.
 
 fn main() {
-    println!("cargo:rerun-if-changed=ohos/native/day_camera.cpp");
+    println!("cargo:rerun-if-changed=platform/harmony/native/day_camera.cpp");
     println!("cargo:rerun-if-env-changed=OHOS_NDK_HOME");
     let target_env = std::env::var("CARGO_CFG_TARGET_ENV").unwrap_or_default();
     if target_env == "ohos" && std::env::var("CARGO_FEATURE_ARKUI").is_ok() {
@@ -42,7 +42,7 @@ mod ohos {
             .flag("-std=c++17")
             .flag("-fPIC")
             .include(&include)
-            .file("ohos/native/day_camera.cpp")
+            .file("platform/harmony/native/day_camera.cpp")
             .compile("day_camera_ohos");
         let lib_arch = match arch.as_str() {
             "aarch64" => "aarch64-linux-ohos",

@@ -1,4 +1,5 @@
 { "string": [
   { "name": "module_desc", "value": "Camera Demo" },
-  { "name": "EntryAbility_label", "value": "Camera Demo" }
+  { "name": "EntryAbility_label", "value": "Camera Demo" },
+  { "name": "day_perm_reason_camera", "value": "Show the camera's preview and take a photo." }
 ] }

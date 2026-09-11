@@ -60,9 +60,9 @@ otherwise the app's: it owns the rationale and decides when a system dialog is w
 |---|---|---|---|
 | iOS | a `UIView` whose layer is `AVCaptureVideoPreviewLayer`, `resizeAspectFill` | `AVCapturePhotoOutput`, JPEG | `[package.metadata.day.ios] swift`, `frameworks = ["AVFoundation"]` |
 | Android | CameraX `PreviewView`, `COMPATIBLE` mode | `ImageCapture.takePicture` to a file | `[package.metadata.day.android] java`, `gradle-dependencies` (camera-core, -camera2, -lifecycle, -view 1.5.1) |
-| HarmonyOS | an ArkTS `XComponent` surface, drawn by the NDK camera kit | `OH_PhotoOutput_Capture`, the main image packed to JPEG | `[package.metadata.day.ohos] ets`, plus `build.rs` compiling `ohos/native/day_camera.cpp` |
+| HarmonyOS | an ArkTS `XComponent` surface, drawn by the NDK camera kit | `OH_PhotoOutput_Capture`, the main image packed to JPEG | `[package.metadata.day.ohos] ets`, plus `build.rs` compiling `platform/harmony/native/day_camera.cpp` |
 
-**iOS.** `ios/swift/DayCamera.swift` runs in the generated DayPieces package. Rust calls three
+**iOS.** `platform/ios/swift/DayCamera.swift` runs in the generated DayPieces package. Rust calls three
 `@_cdecl` functions (`day_camera_new`, `day_camera_command`, `day_camera_release`) and hands
 over a C function pointer at creation; the shim reports through it on the main queue. Session
 configuration and `startRunning()` run on a serial queue. iOS 17's `RotationCoordinator` keeps

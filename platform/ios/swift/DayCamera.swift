@@ -5,7 +5,7 @@
 // into the generated `DayPieces` SwiftPM package (docs/extending.md) and exposes a flat C ABI
 // (`@_cdecl`) that lib-uikit.rs calls; reports go the other way through the C function pointer
 // Rust hands over at creation, always on the main queue. It is the iOS twin of
-// android/java/DayCamera.java.
+// platform/android/java/DayCamera.java.
 
 import AVFoundation
 import UIKit
