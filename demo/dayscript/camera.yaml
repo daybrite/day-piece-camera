@@ -1,0 +1,17 @@
+# The demo's walkthrough (https://daybrite.dev/docs/dayscript), and the crate's on-device test:
+# it runs on the iOS Simulator and the Android emulator in CI, and the same command runs it here.
+#
+#     day launch -p ios-uikit --script dayscript/camera.yaml
+#     day launch -p android-mdc --script dayscript/camera.yaml
+#
+# Status only. The Allow button raises an OS permission dialog, which dayscript cannot dismiss,
+# so it is never tapped here: the state reads `idle` while the permission is undecided. The
+# capture path is dayscript/camera-capture.yaml, after the permission is granted out of band.
+name: camera
+description: The viewfinder page, before the camera permission is granted.
+flow:
+  - wait_for: { id: camera-view }
+  - assert_visible: { id: camera-perm }
+  - assert_visible: { id: camera-state }
+  - assert_text: { id: camera-photo-size, key: no_photo }
+  - screenshot: camera

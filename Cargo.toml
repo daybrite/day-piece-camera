@@ -1,0 +1,104 @@
+[package]
+name = "day-piece-camera"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.89"
+description = "A camera viewfinder with photo capture for Day apps on iOS, Android and HarmonyOS"
+repository = "https://github.com/daybrite/day-piece-camera"
+license = "MPL-2.0"
+# The day framework crates are not on crates.io yet; neither is this one. Apps depend on it
+# from git, exactly as they depend on day.
+publish = false
+
+# An EXTERNAL Day Piece (https://daybrite.dev/docs/extending): a cross-platform front end in Rust
+# (src/lib.rs) plus a native camera behind it on each mobile platform, registered link-time into
+# each backend's renderer slice without touching any day crate:
+#   iOS       — AVFoundation through this crate's Swift shim   ([package.metadata.day.ios])
+#   Android   — CameraX through this crate's Java class         ([package.metadata.day.android])
+#   HarmonyOS — the NDK camera kit through this crate's C shim, behind an ArkTS XComponent
+#               surface                                          ([package.metadata.day.ohos], build.rs)
+#
+# Every day dependency names the BARE canonical URL — no branch, tag, or rev. Cargo unifies a git
+# dependency only when URL and ref match, so an app on `git = "…/day.git"` and a piece pinned to
+# a tag would carry two copies of every day crate; leaving the ref off lets the app's Cargo.lock
+# choose one revision for the whole graph. `compat` below says which day minor that is.
+
+[features]
+uikit = ["dep:day-uikit", "dep:objc2", "dep:objc2-ui-kit"]
+mdc = ["dep:day-android"]
+arkui = ["dep:day-arkui", "dep:cc"]
+# The desktops and the web have no camera arm. Each feature exists so `day` can union
+# `<pkg>/<backend>` into any app build uniformly; the kind then falls back to day's placeholder
+# leaf, and `support()` answers Unsupported so an app can hide its own UI.
+appkit = []
+gtk = []
+qt = []
+xaml = []
+dom = []
+mock = []
+
+[package.metadata.day]
+# The day minor this release is built and tested against. `day build` notes a mismatch.
+compat = "0.4"
+
+# Backends this piece carries a [features] entry for. `day` unions `<pkg>/<backend>` into an
+# app build, so an app depends on this piece with a plain `{ git = "…" }` line — no per-backend
+# feature fan-out in its own Cargo.toml.
+[package.metadata.day.piece]
+backends = ["appkit", "gtk", "qt", "uikit", "mdc", "xaml", "arkui", "dom", "mock"]
+
+# The portable permission this piece needs (https://daybrite.dev/docs/guide-permissions). `day
+# build` turns it into `android.permission.CAMERA`, `NSCameraUsageDescription` and
+# `ohos.permission.CAMERA`; the APP supplies the reason (`[permissions] camera = "…"` in Day.toml,
+# or `permission_camera` in its catalogs) — on iOS and HarmonyOS a build without one fails
+# naming this crate.
+[package.metadata.day.permissions]
+uses = ["camera"]
+
+[dependencies]
+day-spec = { git = "https://github.com/daybrite/day.git" }
+day-core = { git = "https://github.com/daybrite/day.git" }
+day-pieces = { git = "https://github.com/daybrite/day.git" }
+day-reactive = { git = "https://github.com/daybrite/day.git" }
+# The piece checks the camera permission before it starts a session, and asks for it when the
+# app opts in with `.auto_request()`. Headless, so it rides on every target.
+day-part-permissions = { git = "https://github.com/daybrite/day.git" }
+day-uikit = { git = "https://github.com/daybrite/day.git", optional = true }
+day-android = { git = "https://github.com/daybrite/day.git", optional = true }
+day-arkui = { git = "https://github.com/daybrite/day.git", optional = true }
+log = "0.4"
+linkme = "0.3"
+objc2 = { version = "0.6", optional = true }
+objc2-ui-kit = { version = "0.3", optional = true, features = ["UIView", "UIResponder"] }
+
+[build-dependencies]
+# Compiles ohos/native/day_camera.cpp against the OpenHarmony sysroot for the arkui arm only.
+cc = { version = "1", optional = true }
+
+[dev-dependencies]
+day-mock = { git = "https://github.com/daybrite/day.git" }
+
+# --- Android backend contribution ---
+# The day CLI reads this from `cargo metadata` and folds it into the app's Gradle build.
+[package.metadata.day.android]
+java = ["android/java"]
+# CameraX: the camera2 backend, lifecycle binding, and the PreviewView widget.
+gradle-dependencies = [
+    "androidx.camera:camera-core:1.5.1",
+    "androidx.camera:camera-camera2:1.5.1",
+    "androidx.camera:camera-lifecycle:1.5.1",
+    "androidx.camera:camera-view:1.5.1",
+]
+
+# --- iOS backend contribution ---
+# `day build` (ios-uikit) reads this from `cargo metadata`, compiles the `swift` shim sources into
+# a generated local SwiftPM package, and links the frameworks into the app.
+[package.metadata.day.ios]
+swift = ["ios/swift"]
+frameworks = ["AVFoundation"]
+
+# --- HarmonyOS backend contribution ---
+# The ArkTS half: the XComponent surface the NDK camera renders its preview into. `day build`
+# stages it into the app's hvigor project; the C half is compiled by build.rs.
+[package.metadata.day.ohos]
+ets = ["ohos/ets"]

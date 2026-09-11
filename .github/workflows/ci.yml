@@ -1,0 +1,75 @@
+name: ci
+
+# Three questions, answered on every push and once a day:
+#   host        does the crate build, lint, and pass its host tests?
+#   cross-check do the native halves compile for the targets they claim?
+#   demo        does the walkthrough pass on the iOS Simulator, the Android emulator and the
+#               HarmonyOS emulator, against day's newest main?
+#
+# No Cargo.lock is committed, here or in demo/: this crate tracks an unpublished framework by
+# its bare git URL, so every run resolves day afresh at the tip of main and proves the crate
+# against it. A red run after a day push is the signal, not a nuisance, and there is no pinned
+# lock for a local `day patch` table to rewrite and commit by accident.
+on:
+  push:
+    branches: ["**"]
+    tags: ["v[0-9]+.[0-9]+.[0-9]+*"]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    # Daily: day's main moves, and so does CameraX, on weeks nobody pushes.
+    - cron: "0 5 * * *"
+
+permissions:
+  contents: write # release-asset upload on tag builds
+
+jobs:
+  host:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy --all-targets -- -D warnings
+      # The pure half: report decoding, photo payloads, state labels.
+      - run: cargo test
+
+  # The native halves compile for their targets. A link is not attempted here — the demo below
+  # does that inside a real app — but an objc2 call that no longer type-checks, a JNI signature
+  # drift in the Android arm, or a C shim that stopped matching the NDK headers fails here in a
+  # minute rather than in an emulator.
+  cross-check:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: macos-15, target: aarch64-apple-ios-sim, features: uikit }
+          - { os: ubuntu-latest, target: aarch64-linux-android, features: mdc }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - run: cargo clippy --target ${{ matrix.target }} --features ${{ matrix.features }} -- -D warnings
+
+  # The proof: the demo app, driven end to end on each platform by the shared Day workflow. It
+  # builds against day's newest main, runs dayscript/camera.yaml, and fails on a failed assertion
+  # or a blank capture. Screenshots are uploaded per target, and a tag build attaches them to the
+  # release. The HarmonyOS leg is where the C shim meets the NDK and links.
+  demo:
+    uses: daybrite/actions/.github/workflows/dayapp.yml@main
+    secrets: inherit
+    with:
+      project-path: demo
+      targets: ios-uikit, android-mdc, harmony-arkui
+      # The CLI that builds, and the framework revision: with no lock committed the shared
+      # workflow resolves one fresh, and this moves every leg to the same tip-of-main revision.
+      day-version: main
+      update-day-deps: true
+      scripts: dayscript/camera.yaml
+      preflight-checks: fmt, clippy, test
+      ios-devices: |
+        device=iPhone, orientation=portrait
+      android-devices: |
+        device=pixel_7,     os=36, orientation=portrait
