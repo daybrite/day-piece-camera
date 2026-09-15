@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 // ---------------------------------------------------------------------------
-// Android: a CameraX PreviewView with an ImageCapture use case, created by this crate's OWN Java
+// Android: a CameraX PreviewView with an ImageCapture use case, created by this crate's Java
 // (src/DayCamera.java) — folded into the app's Gradle build via
 // [package.metadata.day.android] (which also declares the CameraX dependencies), without
 // touching day-android. Reports come back through DayBridge.nativeOnEvent's Custom kind, carrying

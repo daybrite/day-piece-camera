@@ -1,7 +1,7 @@
 // Copyright © The Daybrite Project
 // SPDX-License-Identifier: MPL-2.0
 
-// The day-piece-camera crate's OWN iOS backend — a Swift shim over AVFoundation. It is staged
+// The day-piece-camera crate's iOS backend — a Swift shim over AVFoundation. It is staged
 // into the generated `DayPieces` SwiftPM package (docs/extending.md) and exposes a flat C ABI
 // (`@_cdecl`) that lib-uikit.rs calls; reports go the other way through the C function pointer
 // Rust hands over at creation, always on the main queue. It is the iOS twin of

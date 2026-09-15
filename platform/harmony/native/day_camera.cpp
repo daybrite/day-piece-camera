@@ -1,7 +1,7 @@
 // Copyright © The Daybrite Project
 // SPDX-License-Identifier: MPL-2.0
 
-// The day-piece-camera crate's OWN HarmonyOS backend — a C shim over the NDK camera kit
+// The day-piece-camera crate's HarmonyOS backend — a C shim over the NDK camera kit
 // (ohcamera). Compiled by build.rs against the OpenHarmony sysroot and linked into the app's
 // native library. C++ only because the camera headers pull in `rawfile/raw_file.h`, which the
 // SDK writes with a C++ reference parameter; the shim itself is plain C with a C ABI. lib-arkui.rs calls the flat API below and receives reports through the
