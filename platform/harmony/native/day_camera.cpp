@@ -8,7 +8,7 @@
 // callback it hands over at creation. The preview renders into the XComponent surface the
 // crate's ArkTS half (platform/harmony/ets/Index.ets) reports; each capture is the photo output's main
 // image, written as a JPEG into the app's cache directory. It is the HarmonyOS twin of
-// platform/ios/swift/DayCamera.swift and platform/android/java/DayCamera.java.
+// platform/ios/swift/DayCamera.swift and src/DayCamera.java.
 
 #include <cstdint>
 #include <cstdio>

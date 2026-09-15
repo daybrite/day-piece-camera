@@ -81,7 +81,7 @@ day-mock = { git = "https://github.com/daybrite/day.git" }
 # --- Android backend contribution ---
 # The day CLI reads this from `cargo metadata` and folds it into the app's Gradle build.
 [package.metadata.day.android]
-java = ["platform/android/java"]
+java = ["src/DayCamera.java"]
 # CameraX: the camera2 backend, lifecycle binding, and the PreviewView widget.
 gradle-dependencies = [
     "androidx.camera:camera-core:1.5.1",
