@@ -1,6 +1,6 @@
-# Take a photo. Opt-in, and deliberately NOT the CI script: the viewfinder needs the camera
-# permission, which only an OS dialog dayscript cannot dismiss can grant. Grant it out of band
-# first — on Android
+# Take a photo. Opt-in, and not the CI script: the viewfinder needs the camera permission,
+# which only an OS dialog dayscript cannot dismiss can grant. Grant it out of band first. On
+# Android
 #
 #     adb shell pm grant dev.daybrite.camerademo android.permission.CAMERA
 #
@@ -8,7 +8,7 @@
 #
 #     xcrun simctl privacy <udid> grant camera dev.daybrite.camerademo
 #
-# — then this script proves the capture path: the session runs, the shutter writes a JPEG into
+# Then this script proves the capture path: the session runs, the shutter writes a JPEG into
 # the app's cache, and the page shows it. The Android emulator's virtual camera makes the whole
 # path real; the iOS Simulator has no capture device and reports `unavailable`, so run this one
 # on Android or on a device.

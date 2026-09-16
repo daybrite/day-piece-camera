@@ -1,10 +1,10 @@
 // Copyright © The Daybrite Project
 // SPDX-License-Identifier: MPL-2.0
 
-// The day-piece-camera crate's Android backend — a Java shim over CameraX. It is bundled with
-// THIS crate and folded into the app's Gradle build via [package.metadata.day.android] (which
-// also declares the CameraX dependencies), with ZERO edits to day-android. It uses only
-// day-android's PUBLIC surface: DayBridge.ctx (the Context) and DayBridge.nativeOnEvent (the
+// The day-piece-camera crate's Android backend: a Java shim over CameraX. It is bundled with
+// This crate and folded into the app's Gradle build via [package.metadata.day.android] (which
+// also declares the CameraX dependencies), with no edits to day-android. It uses only
+// day-android's public surface: DayBridge.ctx (the Context) and DayBridge.nativeOnEvent (the
 // event trampoline). It is the Android twin of platform/ios/swift/DayCamera.swift.
 package dev.daybrite.day.piece.camera;
 
@@ -57,8 +57,8 @@ public final class DayCamera {
     private static final int CMD_START = 0, CMD_STOP = 1, CMD_CAPTURE = 2, CMD_FACING = 3;
 
     /**
-     * Everything a live viewfinder carries. It is its OWN LifecycleOwner: CameraX binds use cases
-     * to a lifecycle, and binding to the activity's would keep the camera open across pages —
+     * Everything a live viewfinder carries. It is a LifecycleOwner of its own: CameraX binds use
+     * cases to a lifecycle, and binding to the activity's would keep the camera open across pages;
      * this registry moves to RESUMED on start and DESTROYED on release, so the camera is freed the
      * moment Day releases the view.
      */
@@ -91,7 +91,7 @@ public final class DayCamera {
             return facing == 1 ? CameraSelector.DEFAULT_FRONT_CAMERA : CameraSelector.DEFAULT_BACK_CAMERA;
         }
 
-        /** Unbind THIS viewfinder's use cases only: `unbindAll` would take another page's with them. */
+        /** Unbind this viewfinder's use cases only: `unbindAll` would take another page's with them. */
         void unbind() {
             if (provider != null) {
                 if (preview != null) {
@@ -278,7 +278,7 @@ public final class DayCamera {
             @Override
             public void onImageSaved(@NonNull ImageCapture.OutputFileResults results) {
                 // CameraX writes the sensor's pixels and records the rotation as EXIF. A photo
-                // is handed over UPRIGHT, so a viewer that ignores EXIF shows it right too.
+                // is handed over upright, so a viewer that ignores EXIF shows it right too.
                 if (!upright(file)) {
                     MAIN.post(() -> live.report(ERROR, "the photo could not be rotated"));
                     return;

@@ -1,4 +1,4 @@
-# Camera Demo — UI strings (https://daybrite.dev/docs/localization).
+# Camera Demo: UI strings (https://daybrite.dev/docs/localization).
 
 app_title = Camera Demo
 

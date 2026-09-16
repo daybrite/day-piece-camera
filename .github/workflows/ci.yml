@@ -34,8 +34,8 @@ jobs:
       # The pure half: report decoding, photo payloads, state labels.
       - run: cargo test
 
-  # The native halves compile for their targets. A link is not attempted here — the demo below
-  # does that inside a real app — but an objc2 call that no longer type-checks, a JNI signature
+  # The native halves compile for their targets. A link is not attempted here (the demo below
+  # does that inside a real app), but an objc2 call that no longer type-checks, a JNI signature
   # drift in the Android arm, or a C shim that stopped matching the NDK headers fails here in a
   # minute rather than in an emulator.
   cross-check:

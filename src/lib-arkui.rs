@@ -3,11 +3,12 @@
 
 // ---------------------------------------------------------------------------
 // HarmonyOS: the NDK camera kit (libohcamera) behind an ArkTS XComponent surface. The ArkUI C
-// node API has no surface node kind, so this crate ships its OWN ArkTS (platform/harmony/ets/Index.ets) that
-// builds the XComponent in a BuilderNode and reports its surface id back through `pieceEvent`;
-// the front-end forwards that report as `CameraPatch::Surface`, and from there this crate's C
-// shim (platform/harmony/native/day_camera.cpp, compiled by build.rs) owns the camera: it opens the device,
-// renders the preview into that surface, and packs each capture to a JPEG in the cache
+// node API has no surface node kind, so this crate ships ArkTS of its own
+// (platform/harmony/ets/Index.ets) that builds the XComponent in a BuilderNode and reports its
+// surface id back through `pieceEvent`; the front-end forwards that report as
+// `CameraPatch::Surface`, and from there this crate's C shim
+// (platform/harmony/native/day_camera.cpp, compiled by build.rs) owns the camera: it opens the
+// device, renders the preview into that surface, and packs each capture to a JPEG in the cache
 // directory. Reports come back through the C callback handed over at creation.
 // ---------------------------------------------------------------------------
 

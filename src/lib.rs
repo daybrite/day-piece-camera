@@ -1,10 +1,10 @@
 // Copyright © The Daybrite Project
 // SPDX-License-Identifier: MPL-2.0
 
-//! day-piece-camera — a camera viewfinder with photo capture for Day apps.
+//! day-piece-camera: a camera viewfinder with photo capture for Day apps.
 //!
-//! An external Day Piece: one Rust API in front, the platform's camera behind it — AVFoundation
-//! on iOS, CameraX on Android, the NDK camera kit on HarmonyOS — declared as
+//! An external Day Piece: one Rust API in front, the platform's camera behind it (AVFoundation
+//! on iOS, CameraX on Android, the NDK camera kit on HarmonyOS), declared as
 //! `[package.metadata.day.*]` in Cargo.toml and staged by `day build`. The renderers register
 //! link-time into each backend's slice; nothing in day knows this crate exists. The desktops and
 //! the web have no camera arm: there the kind realizes day's placeholder leaf, and [`support`]
@@ -102,7 +102,7 @@ pub enum CameraState {
     Starting,
     /// The preview is live and a capture will succeed.
     Running,
-    /// This device has no usable camera — the iOS Simulator, a desktop without one.
+    /// This device has no usable camera: the iOS Simulator, a desktop without one.
     Unavailable,
     /// The permission was refused, or the OS restricts it, so the session cannot start.
     Denied,
@@ -185,7 +185,7 @@ impl Photo {
         })
     }
 
-    /// The JPEG bytes, read from the cache file — shared, since a photo is large and a viewer
+    /// The JPEG bytes, read from the cache file; shared, since a photo is large and a viewer
     /// keeps a reference to it.
     pub fn bytes(&self) -> io::Result<Arc<Vec<u8>>> {
         std::fs::read(&self.path).map(Arc::new)
@@ -202,7 +202,7 @@ impl Photo {
 
 /// What this backend realizes: `Native` where a camera arm is compiled in, `Unsupported`
 /// elsewhere, where the kind renders day's placeholder leaf. `Native` is a promise about the
-/// code, not the hardware — the iOS Simulator reports [`CameraState::Unavailable`] at run time.
+/// code, not the hardware; the iOS Simulator reports [`CameraState::Unavailable`] at run time.
 pub fn support() -> day_spec::Support {
     if cfg!(any(
         all(feature = "uikit", target_os = "ios"),
@@ -226,7 +226,7 @@ pub struct Camera {
     photo: Option<Signal<Option<Photo>>>,
 }
 
-/// `camera()` — the rear camera's live preview, running whenever the permission is held.
+/// `camera()`: the rear camera's live preview, running whenever the permission is held.
 pub fn camera() -> Camera {
     Camera {
         facing: Reactive::Const(Facing::Back),
@@ -239,15 +239,15 @@ pub fn camera() -> Camera {
 }
 
 impl Camera {
-    /// Which camera to show — a constant, a `Signal<Facing>`, or a `Fn() -> Facing`. When it is
+    /// Which camera to show: a constant, a `Signal<Facing>`, or a `Fn() -> Facing`. When it is
     /// reactive the viewfinder switches live.
     pub fn facing<M>(mut self, facing: impl IntoReactive<Facing, M>) -> Self {
         self.facing = facing.into_reactive();
         self
     }
 
-    /// Whether the session should run — a constant, a `Signal<bool>`, or a closure. Default
-    /// true. The session runs only while this is true AND the permission is held; `false`
+    /// Whether the session should run: a constant, a `Signal<bool>`, or a closure. Default
+    /// true. The session runs only while this is true and the permission is held; `false`
     /// stops it and releases the camera.
     pub fn active<M>(mut self, active: impl IntoReactive<bool, M>) -> Self {
         self.active = active.into_reactive();
@@ -350,7 +350,7 @@ impl Piece for Camera {
             start();
         }
         if let Reactive::Dyn(read) = active {
-            // Only a CHANGE moves the session: the watch re-runs on any dependency of the
+            // Only a change moves the session: the watch re-runs on any dependency of the
             // closure, and re-sending Start to a running camera would reconfigure it.
             let last = std::rc::Rc::new(std::cell::Cell::new(wanted));
             watch(
@@ -410,7 +410,7 @@ impl Piece for Camera {
 }
 
 // ---------------------------------------------------------------------------
-// Per-toolkit native renderers — the three mobile toolkits. Each registers a `Renderer`
+// Per-toolkit native renderers: the three mobile toolkits. Each registers a `Renderer`
 // link-time into its backend's `RENDERERS` slice; `#[cfg]` gates each to its feature + target.
 // ---------------------------------------------------------------------------
 
@@ -418,7 +418,7 @@ day_pieces::glue_modules!(uikit, mdc, arkui);
 
 // --- Typed builders, forwarded through `Decorated` (docs/api-style.md) ---
 
-/// [`Camera`]'s own builders, reachable THROUGH a decoration (§5.2): `day_pieces::Decorated`
+/// [`Camera`]'s own builders, reachable through a decoration (§5.2): `day_pieces::Decorated`
 /// forwards them to the piece it wraps, so generic modifiers and typed ones chain in any order.
 pub trait CameraBuilder: Sized {
     fn facing<M>(self, facing: impl IntoReactive<Facing, M>) -> Self;

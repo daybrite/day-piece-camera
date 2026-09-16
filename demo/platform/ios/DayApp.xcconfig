@@ -8,9 +8,9 @@
 // Reference:   https://developer.apple.com/documentation/xcode/build-settings-reference
 
 // ===========================================================================
-// Identity — fresh-checkout fallbacks
+// Identity: fresh-checkout fallbacks
 // ===========================================================================
-// Day.toml is the source of truth for these three: every `day build` regenerates the
+// Day.toml defines these three: every `day build` regenerates the
 // include at the bottom of this file from it, and that include wins. These lines only
 // carry a checkout that has not run `day build` yet. Change the app id in Day.toml [app]
 // and the version in Cargo.toml [package].
@@ -56,6 +56,6 @@ TARGETED_DEVICE_FAMILY = 1,2
 // Day-managed values (generated)
 // ===========================================================================
 // Written by `day build` from Day.toml; missing until the first build, which is fine.
-// Included LAST so Day.toml stays authoritative for the identity block above — anything
+// Included last so Day.toml stays authoritative for the identity block above; anything
 // else you set above this line keeps its value.
 #include? "../../build/day/xcconfig/ios.xcconfig"

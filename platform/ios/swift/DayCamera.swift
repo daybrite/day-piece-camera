@@ -1,7 +1,7 @@
 // Copyright © The Daybrite Project
 // SPDX-License-Identifier: MPL-2.0
 
-// The day-piece-camera crate's iOS backend — a Swift shim over AVFoundation. It is staged
+// The day-piece-camera crate's iOS backend, a Swift shim over AVFoundation. It is staged
 // into the generated `DayPieces` SwiftPM package (docs/extending.md) and exposes a flat C ABI
 // (`@_cdecl`) that lib-uikit.rs calls; reports go the other way through the C function pointer
 // Rust hands over at creation, always on the main queue. It is the iOS twin of
@@ -226,7 +226,7 @@ final class DayCameraCapture: NSObject, AVCapturePhotoCaptureDelegate {
             view.send(ERROR, "the photo has no file representation")
             return
         }
-        // The sensor's pixels carry an EXIF rotation. A photo is handed over UPRIGHT, so a
+        // The sensor's pixels carry an EXIF rotation. A photo is handed over upright, so a
         // viewer that ignores EXIF shows it right too: redraw when the orientation is not `.up`.
         var data = raw
         var width = 0
@@ -255,8 +255,8 @@ final class DayCameraCapture: NSObject, AVCapturePhotoCaptureDelegate {
     }
 }
 
-/// Create the preview view and, when `active`, start the session. Returns a +1-retained pointer
-/// — the Rust caller takes ownership (wraps it as Retained<UIView>).
+/// Create the preview view and, when `active`, start the session. Returns a +1-retained
+/// pointer; the Rust caller takes ownership (wraps it as Retained<UIView>).
 @_cdecl("day_camera_new")
 public func day_camera_new(
     _ node: UInt64,

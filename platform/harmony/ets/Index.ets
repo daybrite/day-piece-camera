@@ -1,15 +1,15 @@
 // Copyright © The Daybrite Project
 // SPDX-License-Identifier: MPL-2.0
 
-// day-piece-camera — the HarmonyOS half of the piece (docs/camera.md).
+// day-piece-camera: the HarmonyOS half of the piece (docs/camera.md).
 //
 // The ArkUI C node API has no surface node kind, so the preview surface is declared here in
 // ArkTS: an XComponent built into a BuilderNode and handed to Day as a FrameNode the native tree
 // mounts like any other node. Nothing else happens on this side. The surface id goes back
-// through `pieceEvent` with the piece's SURFACE code; the crate's C shim then renders the NDK
+// through `pieceEvent` with the piece's surface code; the crate's C shim then renders the NDK
 // camera's preview into it and owns the session from there.
 //
-// NO percentage sizing: a BuilderNode is built detached, so '100%' resolves against the whole
+// No percentage sizing: a BuilderNode is built detached, so '100%' resolves against the whole
 // window. Day owns layout and sets this node's position + size through the ArkUI C API like
 // every other leaf, which is what the piece's `fill_measure` asks for.
 

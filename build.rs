@@ -5,7 +5,7 @@
 //! and link the camera and image libraries. Only for a `*-linux-ohos` target with the `arkui`
 //! feature; a no-op everywhere else, so a host build never needs the NDK. The NDK path comes from
 //! `OHOS_NDK_HOME` (the SDK's `native` directory), which the `day` CLI sets when it builds the
-//! HarmonyOS target — the same variable day-arkui-sys reads.
+//! HarmonyOS target, the same variable day-arkui-sys reads.
 
 fn main() {
     println!("cargo:rerun-if-changed=platform/harmony/native/day_camera.cpp");

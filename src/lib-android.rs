@@ -3,7 +3,7 @@
 
 // ---------------------------------------------------------------------------
 // Android: a CameraX PreviewView with an ImageCapture use case, created by this crate's Java
-// (src/DayCamera.java) — folded into the app's Gradle build via
+// (src/DayCamera.java) and folded into the app's Gradle build via
 // [package.metadata.day.android] (which also declares the CameraX dependencies), without
 // touching day-android. Reports come back through DayBridge.nativeOnEvent's Custom kind, carrying
 // the node id the view was made with.
@@ -15,7 +15,7 @@ use day_android::jni::objects::JValue;
 use day_android::{AHandle, Android, with_env};
 use day_spec::NodeId;
 
-/// This piece's OWN Java class (src/DayCamera.java, on the app classpath at build).
+/// This piece's Java class (src/DayCamera.java, on the app classpath at build).
 const CAMERA_CLASS: &str = "dev/daybrite/day/piece/camera/DayCamera";
 
 /// Commands, as the Java side numbers them.
@@ -27,7 +27,7 @@ const CMD_FACING: i32 = 3;
 fn make(_backend: &mut Android, p: &CameraProps, id: NodeId) -> AHandle {
     with_env(|env| {
         // A Java throw (the CameraX dependency missing from the app build, say) must not panic
-        // inside realize — the panic unwinds the JNI up-call and aborts. Placeholder instead.
+        // inside realize: the panic unwinds the JNI up-call and aborts. Placeholder instead.
         let made = day_android::try_make_view_on(
             env,
             CAMERA_CLASS,

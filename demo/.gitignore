@@ -2,22 +2,22 @@
 # Cargo.lock too, unlike a real app. This demo exists to prove the crate beside it against day's
 # newest main, so CI resolves a fresh lock on every run (the shared `build-day-app` workflow
 # generates one when none is committed, and `update-day-deps` moves every leg to one tip
-# revision). A committed lock would pin the framework at whatever it was generated against — or,
+# revision). A committed lock would pin the framework at whatever it was generated against, or,
 # after `day patch --local`, record the paths of one developer's machine.
 Cargo.lock
 /build
 
-# NOT Cargo.lock. This is an application, and Cargo's guidance for an end product is to commit
+# Not Cargo.lock. This is an application, and Cargo's guidance for an end product is to commit
 # the lock: it is what makes a build reproducible for everyone who checks the repo out, and what
 # lets CI pass `--locked` (the shared `build-day-app` workflow's clippy/check/test legs do, and
-# `--locked` REFUSES to create a missing lock rather than resolving fresh). Run a build once and
+# `--locked` refuses to create a missing lock rather than resolving fresh). Run a build once and
 # commit the file it writes.
 
 # Machine-local: `day patch --local <day-checkout>` writes this to build against a checkout
 # instead of the git dependency. CI has no such file and resolves git.
 /.cargo/config.toml
 
-# Xcode local state. The .xcodeproj itself is source; what Xcode writes inside it is not —
+# Xcode local state. The .xcodeproj itself is source; what Xcode writes inside it is not:
 # project.xcworkspace holds the SwiftPM resolution for the pieces package day generates under
 # build/, and cannot be relocated out of the project.
 xcuserdata/

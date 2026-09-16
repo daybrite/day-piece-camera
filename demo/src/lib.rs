@@ -1,11 +1,11 @@
 // Copyright © The Daybrite Project
 // SPDX-License-Identifier: MPL-2.0
 
-//! Camera Demo — the demo and on-device test app for `day-piece-camera`.
+//! Camera Demo: the demo and on-device test app for `day-piece-camera`.
 //!
 //! One page: the camera permission's status and the button that asks for it, the viewfinder,
 //! a shutter, a camera switch, and the last photo. Every element carries a stable id, so
-//! `dayscript/camera.yaml` can assert the page on the iOS Simulator and the Android emulator —
+//! `dayscript/camera.yaml` can assert the page on the iOS Simulator and the Android emulator,
 //! and `dayscript/camera-capture.yaml`, once the permission is granted out of band, can take a
 //! photo and see it land.
 
@@ -133,7 +133,7 @@ fn permission_row(active: Signal<bool>) -> impl Piece {
                         .bordered()
                         .action(move || {
                             if can_prompt {
-                                // The completion runs on an unspecified thread — Setters cross
+                                // The completion runs on an unspecified thread; Setters cross
                                 // back to the signals.
                                 let set_status = status.setter();
                                 let set_active = active.setter();
