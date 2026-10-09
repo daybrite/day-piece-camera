@@ -144,8 +144,8 @@ by path and is a complete integration example.
 Run `cargo test` for the host-side checks. From `demo/`, run
 `day launch -p android-mdc --script dayscript/camera.yaml` for the walkthrough.
 The separate `dayscript/camera-capture.yaml` takes a photo and needs the permission granted
-first (`adb shell pm grant dev.daybrite.camerademo android.permission.CAMERA`), since Day
-scripts cannot dismiss the OS permission dialog; CI grants it that way on its Android leg and
-runs the capture script there on every push, beside the walkthrough on the iOS Simulator and
-the HarmonyOS emulator. Validate capture on a real iPhone and on the intended HarmonyOS
+first, since Day scripts cannot dismiss the OS permission dialog: `day launch -p android-mdc
+--grant camera --script dayscript/camera-capture.yaml` marks it on the emulator before the app
+starts. CI launches that way on its Android leg and runs the capture script there on every
+push, beside the walkthrough on the iOS Simulator and the HarmonyOS emulator. Validate capture on a real iPhone and on the intended HarmonyOS
 hardware before relying on those paths.

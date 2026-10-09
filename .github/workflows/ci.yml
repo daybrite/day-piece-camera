@@ -64,11 +64,11 @@ jobs:
   # Two walkthroughs. dayscript/camera.yaml asserts the page as a first launch shows it, with
   # the permission undecided: the Allow button raises an OS dialog a dayscript cannot dismiss,
   # so the viewfinder stays idle there. On Android the emulator has a virtual camera, so that leg
-  # grants the permission from outside the app first (`script-setup` runs after the emulator is
-  # up: the APK `day build` wrote is installed and `pm grant` marks it, and the launch's own
-  # `adb install -r` keeps the grant) and runs dayscript/camera-capture.yaml instead: the session
-  # runs, the shutter writes a photo, the page shows it, and the other camera comes up. The iOS
-  # Simulator has no capture device, so a grant there would only read `unavailable`.
+  # launches with the permission already granted (`grant-permissions` becomes `day launch
+  # --grant camera`, which marks it with `pm grant` between the install and the start) and runs
+  # dayscript/camera-capture.yaml instead: the session runs, the shutter writes a photo, the page
+  # shows it, and the other camera comes up. The iOS Simulator has no camera at all, so the CLI
+  # refuses a camera grant there, and the walkthrough stays the first-launch one.
   demo:
     uses: daybrite/actions/.github/workflows/dayapp.yml@v1
     permissions:
@@ -81,12 +81,8 @@ jobs:
       scripts: dayscript/camera.yaml
       target-scripts: |
         android-mdc: dayscript/camera-capture.yaml
-      script-setup: |
-        if [ "$DAY_SCRIPT_TARGET" = android-mdc ]; then
-          apk=$(ls platform/android/app/build/outputs/apk/*/*.apk | head -n 1)
-          adb install -r "$apk"
-          adb shell pm grant dev.daybrite.camerademo android.permission.CAMERA
-        fi
+      grant-permissions: |
+        android-mdc: camera
       preflight-checks: fmt, clippy, test
       ios-devices: |
         device=iPhone, orientation=portrait

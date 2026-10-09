@@ -95,8 +95,9 @@ bridge posts through its own seam.
 
 The demo's `dayscript/camera.yaml` asserts the page before the permission is granted: an OS
 permission dialog is a system modal a dayscript cannot dismiss, so CI runs that script on the
-iOS Simulator and the HarmonyOS emulator. `dayscript/camera-capture.yaml` takes a photo after
-`adb shell pm grant` (or `xcrun simctl privacy … grant camera`); CI's Android leg grants the
-permission that way before launching and runs the capture script instead, since the emulator's
-virtual camera runs the full path. The iOS Simulator has no capture device and reports
-`unavailable`, so there the capture script is for a device.
+iOS Simulator and the HarmonyOS emulator. `dayscript/camera-capture.yaml` takes a photo with
+the permission already allowed: `day launch --grant camera` marks it on the device between the
+install and the start, and CI's Android leg launches that way (the shared workflow's
+`grant-permissions` input) and runs the capture script instead, since the emulator's virtual
+camera runs the full path. The iOS Simulator has no camera at all, so the CLI refuses the grant
+there; the capture script is for a device, with the permission allowed once by hand.
