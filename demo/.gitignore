@@ -17,12 +17,38 @@ Cargo.lock
 # instead of the git dependency. CI has no such file and resolves git.
 /.cargo/config.toml
 
+# What the desktop leaves behind in any directory it shows.
+.DS_Store
+Thumbs.db
+
+# Signing material and store credentials never belong in the repository. CI reads them from
+# repository secrets (https://daybrite.dev/docs/app-store-submissions), and a local release
+# pack reads them from the environment through `Day.toml`'s `[signing]` tables: an Apple
+# certificate, an App Store Connect or notary key, an Android or HarmonyOS keystore, a
+# provisioning profile, and a `.env` holding the variables those tables and the store lanes
+# expect. Keep each outside the checkout; these patterns are the safety net for the one that
+# lands inside it.
+*.p12
+*.p8
+*.keystore
+*.jks
+*.mobileprovision
+*.p7b
+.env
+.env.*
+
 # Xcode local state. The .xcodeproj itself is source; what Xcode writes inside it is not:
 # project.xcworkspace holds the SwiftPM resolution for the pieces package day generates under
 # build/, and cannot be relocated out of the project.
 xcuserdata/
 DerivedData/
 **/*.xcodeproj/project.xcworkspace/
+
+# Per-checkout Xcode settings: each platform/<p>/DayApp.xcconfig ends with an optional
+# `#include? "DayApp.local.xcconfig"`, so a developer can set their signing team (and anything
+# else this machine needs) without committing it. Absent on a fresh clone and in CI, which is
+# why the include is optional.
+platform/*/DayApp.local.xcconfig
 
 # Gradle local state, the android counterpart of the above: platform/android/ is source, but
 # what Gradle generates inside it is not. Gradle writes its caches and per-module build/ trees
@@ -32,6 +58,10 @@ DerivedData/
 platform/android/.gradle/
 platform/android/**/build/
 platform/android/local.properties
+# Gradle's `updateDaemonJvm` task writes this when an IDE syncs the project: a daemon JVM vendor
+# and version chosen on one machine, with download URLs. A project that means to pin its daemon
+# JVM commits it by hand (`git add -f`).
+platform/android/gradle/gradle-daemon-jvm.properties
 # Android Studio writes its project model into the Gradle root it opens. The Xcode counterpart
 # (xcuserdata/) is above; this is the same thing for the other IDE, and without it the first
 # person to open platform/android in Studio leaves a dozen untracked files behind.

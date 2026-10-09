@@ -19,8 +19,10 @@ day launch -p android-mdc --script dayscript/camera.yaml
 ```
 
 The script asserts the page before the permission is granted and captures one screenshot under
-`build/day/screenshots/<target>/`. CI runs exactly this on the iOS Simulator and the Android
-emulator ([../.github/workflows/ci.yml](../.github/workflows/ci.yml)).
+`build/day/screenshots/<target>/`. CI runs exactly this on the iOS Simulator and the HarmonyOS
+emulator ([../.github/workflows/ci.yml](../.github/workflows/ci.yml)); its Android leg grants
+the permission first and runs the capture script below instead, so a photo is taken on every
+push.
 
 Taking a photo needs the permission, which only an OS dialog can grant. Grant it out of band,
 then run the capture script:

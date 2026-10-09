@@ -1,6 +1,6 @@
-# Take a photo. Opt-in, and not the CI script: the viewfinder needs the camera permission,
-# which only an OS dialog dayscript cannot dismiss can grant. Grant it out of band first. On
-# Android
+# Take a photo. The viewfinder needs the camera permission, which only an OS dialog dayscript
+# cannot dismiss can grant, so grant it out of band first; CI does exactly that on its Android
+# leg (`script-setup` in ../../.github/workflows/ci.yml) and runs this script there. On Android
 #
 #     adb shell pm grant dev.daybrite.camerademo android.permission.CAMERA
 #

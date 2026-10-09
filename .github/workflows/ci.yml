@@ -20,8 +20,11 @@ on:
     # Daily: day's main moves, and so does CameraX, on weeks nobody pushes.
     - cron: "0 7 * * *"
 
+# The repository's own jobs run this checkout's code with a read-only token. The write grants
+# sit on the job that calls the shared workflow, whose release and Pages jobs alone use them;
+# its build legs, which run this code too, narrow their token to read-only themselves.
 permissions:
-  contents: write # release-asset upload on tag builds
+  contents: read
 
 jobs:
   host:
@@ -54,20 +57,36 @@ jobs:
       - run: cargo clippy --target ${{ matrix.target }} --features ${{ matrix.features }} -- -D warnings
 
   # The proof: the demo app, driven end to end on each platform by the shared Day workflow. It
-  # builds against day's newest main, runs dayscript/camera.yaml, and fails on a failed assertion
-  # or a blank capture. Screenshots are uploaded per target, and a tag build attaches them to the
+  # builds against day's newest main, runs the walkthrough, and fails on a failed assertion or a
+  # blank capture. Screenshots are uploaded per target, and a tag build attaches them to the
   # release. The HarmonyOS leg is where the C shim meets the NDK and links.
+  #
+  # Two walkthroughs. dayscript/camera.yaml asserts the page as a first launch shows it, with
+  # the permission undecided: the Allow button raises an OS dialog a dayscript cannot dismiss,
+  # so the viewfinder stays idle there. On Android the emulator has a virtual camera, so that leg
+  # grants the permission from outside the app first (`script-setup` runs after the emulator is
+  # up: the APK `day build` wrote is installed and `pm grant` marks it, and the launch's own
+  # `adb install -r` keeps the grant) and runs dayscript/camera-capture.yaml instead: the session
+  # runs, the shutter writes a photo, the page shows it, and the other camera comes up. The iOS
+  # Simulator has no capture device, so a grant there would only read `unavailable`.
   demo:
-    uses: daybrite/actions/.github/workflows/dayapp.yml@main
+    uses: daybrite/actions/.github/workflows/dayapp.yml@v1
+    permissions:
+      contents: write # release-asset upload on tag builds
     secrets: inherit
     with:
       project-path: demo
       targets: ios-uikit, android-mdc, harmony-arkui
-      # The CLI that builds, and the framework revision: with no lock committed the shared
-      # workflow resolves one fresh, and this moves every leg to the same tip-of-main revision.
-      day-version: main
       update-day-deps: true
       scripts: dayscript/camera.yaml
+      target-scripts: |
+        android-mdc: dayscript/camera-capture.yaml
+      script-setup: |
+        if [ "$DAY_SCRIPT_TARGET" = android-mdc ]; then
+          apk=$(ls platform/android/app/build/outputs/apk/*/*.apk | head -n 1)
+          adb install -r "$apk"
+          adb shell pm grant dev.daybrite.camerademo android.permission.CAMERA
+        fi
       preflight-checks: fmt, clippy, test
       ios-devices: |
         device=iPhone, orientation=portrait
