@@ -10,13 +10,18 @@
 // ---------------------------------------------------------------------------
 
 use super::*;
-use day_android::DayEnv;
-use day_android::jni::objects::JValue;
-use day_android::{AHandle, Android, with_env};
+use day_android::{AHandle, Android, java};
 use day_spec::NodeId;
 
-/// This piece's Java class (src/DayCamera.java, on the app classpath at build).
-const CAMERA_CLASS: &str = "dev/daybrite/day/piece/camera/DayCamera";
+// This piece's Java class (src/DayCamera.java, on the app classpath at build).
+day_android::java_class! {
+    DayCamera => dev.daybrite.day.piece.camera.DayCamera,
+    methods {
+        static fn makeCamera(id: jlong, facing: jint, active: jboolean) -> android.view.View,
+        static fn cameraCommand(view: android.view.View, cmd: jint, arg: jint),
+        static fn releaseCamera(view: android.view.View),
+    },
+}
 
 /// Commands, as the Java side numbers them.
 const CMD_START: i32 = 0;
@@ -25,25 +30,11 @@ const CMD_CAPTURE: i32 = 2;
 const CMD_FACING: i32 = 3;
 
 fn make(_backend: &mut Android, p: &CameraProps, id: NodeId) -> AHandle {
-    with_env(|env| {
-        // A Java throw (the CameraX dependency missing from the app build, say) must not panic
-        // inside realize: the panic unwinds the JNI up-call and aborts. Placeholder instead.
-        let made = day_android::try_make_view_on(
-            env,
-            CAMERA_CLASS,
-            "makeCamera",
-            "(JIZ)Landroid/view/View;",
-            &[
-                JValue::Long(id.0 as i64),
-                JValue::Int(p.facing.code()),
-                JValue::Bool(p.active),
-            ],
-        )
-        .ok();
-        AHandle(made.unwrap_or_else(|| {
-            log::warn!("day-piece-camera: DayCamera.makeCamera failed; substituting a placeholder");
-            day_android::placeholder_view(env, "camera")
-        }))
+    // A Java throw (the CameraX dependency missing from the app build, say) must not panic
+    // inside realize: the panic unwinds the JNI up-call and aborts. Placeholder instead.
+    let (facing, active) = (p.facing.code(), p.active);
+    day_android::realize("camera", |env| {
+        DayCamera::makeCamera(env, id.0 as i64, facing, active)
     })
 }
 
@@ -56,31 +47,13 @@ fn update(_backend: &mut Android, h: &AHandle, patch: &CameraPatch) {
         // The ArkTS surface handshake is HarmonyOS's alone.
         CameraPatch::Surface(_) => return,
     };
-    with_env(|env| {
-        let _ = env.dcall_static(
-            CAMERA_CLASS,
-            "cameraCommand",
-            "(Landroid/view/View;II)V",
-            &[
-                JValue::Object(h.0.as_obj()),
-                JValue::Int(cmd),
-                JValue::Int(arg),
-            ],
-        );
-    });
+    java(|env| DayCamera::cameraCommand(env, h.0.as_obj(), cmd, arg));
 }
 
 /// The renderer's release: unbind the use cases so the camera is freed the moment the page goes
 /// away, not when the activity does.
 fn release(_backend: &mut Android, h: &AHandle) {
-    with_env(|env| {
-        let _ = env.dcall_static(
-            CAMERA_CLASS,
-            "releaseCamera",
-            "(Landroid/view/View;)V",
-            &[JValue::Object(h.0.as_obj())],
-        );
-    });
+    java(|env| DayCamera::releaseCamera(env, h.0.as_obj()));
 }
 
 day_pieces::renderer!(day_android::RENDERERS, Android,
