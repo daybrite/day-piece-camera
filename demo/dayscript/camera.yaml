@@ -11,8 +11,8 @@
 name: camera
 description: The viewfinder page, before the camera permission is granted.
 flow:
-  - wait_for: { id: camera-view }
-  - assert_visible: { id: camera-perm }
-  - assert_visible: { id: camera-state }
-  - assert_text: { id: camera-photo-size, key: no_photo }
+  - wait_for: { id: camera_view }
+  - assert_visible: { id: camera_perm }
+  - assert_visible: { id: camera_state }
+  - assert_text: { id: camera_photo_size, key: no_photo }
   - screenshot: camera

@@ -50,7 +50,7 @@ pub fn root() -> impl Piece {
         column((
             label(res::str::app_title())
                 .font(Font::Title)
-                .id("camera-title"),
+                .id(day::id!(camera_title)),
             permission_row(active),
             column((camera()
                 .facing(facing)
@@ -59,7 +59,7 @@ pub fn root() -> impl Piece {
                 .state(state)
                 .photo(photo)
                 .frame(320.0, 240.0)
-                .id("camera-view"),))
+                .id(day::id!(camera_view)),))
             .align(HAlign::Center)
             .grow_w(),
             row((
@@ -67,25 +67,27 @@ pub fn root() -> impl Piece {
                     .prominent()
                     .enabled(move || state.get() == CameraState::Running)
                     .action(move || shutter.notify())
-                    .id("camera-shoot"),
+                    .id(day::id!(camera_shoot)),
                 button(res::str::flip())
                     .bordered()
                     .enabled(move || state.get() == CameraState::Running)
                     .action(move || facing.update(|f| *f = f.flipped()))
-                    .id("camera-flip"),
+                    .id(day::id!(camera_flip)),
             ))
             .spacing(8.0),
             labeled(
                 res::str::state(),
                 // The locale-independent label, so the script can assert it.
-                label(move || state.get().label().to_string()).id("camera-state"),
+                label(move || state.get().label().to_string()).id(day::id!(camera_state)),
             ),
             when(
                 move || bytes.get().is_some(),
                 move || {
-                    column((remote_image(bytes).frame(240.0, 180.0).id("camera-photo"),))
-                        .align(HAlign::Center)
-                        .grow_w()
+                    column((remote_image(bytes)
+                        .frame(240.0, 180.0)
+                        .id(day::id!(camera_photo)),))
+                    .align(HAlign::Center)
+                    .grow_w()
                 },
             ),
             labeled(
@@ -99,7 +101,7 @@ pub fn root() -> impl Piece {
                     .format(),
                     None => res::str::no_photo().format(),
                 })
-                .id("camera-photo-size"),
+                .id(day::id!(camera_photo_size)),
             ),
         ))
         .spacing(12.0)
@@ -122,7 +124,7 @@ fn permission_row(active: Signal<bool>) -> impl Piece {
     labeled(
         res::str::permission(),
         row((
-            label(move || status.get()).id("camera-perm"),
+            label(move || status.get()).id(day::id!(camera_perm)),
             when(
                 move || gated && !active.get(),
                 move || {
@@ -145,7 +147,7 @@ fn permission_row(active: Signal<bool>) -> impl Piece {
                                 status.set(perms::status(perm).label().to_string());
                             }
                         })
-                        .id("camera-perm-action")
+                        .id(day::id!(camera_perm_action))
                 },
             ),
         ))
