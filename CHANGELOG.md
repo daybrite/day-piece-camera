@@ -7,6 +7,9 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 ## Unreleased
 
+- Changed: `.state(..)` and `.photo(..)` take any `Binding` (a `Signal` still works, a
+  day-model field too). `CameraBuilder` is generated from the piece's builders, so they chain
+  after any `Decorate` modifier as before.
 - Changed: the Android factory moved from `platform/android/java/…/DayCamera.java` to
   `src/DayCamera.java`, beside the Rust arms. Building for Android now needs a `day` CLI that
   links single-file `java` entries; an older one skips the file, and the app fails when it first

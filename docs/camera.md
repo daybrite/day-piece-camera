@@ -22,8 +22,8 @@ camera()
     .active(active)        // bool; the session runs only while true AND the permission is held
     .auto_request()        // opt in: ask for the permission when the session is first wanted
     .capture(shutter)      // a Trigger; each fire takes one photo
-    .state(state)          // Signal<CameraState>
-    .photo(photo)          // Signal<Option<Photo>>
+    .state(state)          // a Binding<CameraState>: a Signal, or a model field
+    .photo(photo)          // a Binding<Option<Photo>>
 ```
 
 | State | Meaning |

@@ -24,12 +24,7 @@ day::resources!();
 
 /// The window every entry point opens.
 pub fn window() -> day::WindowOptions {
-    day::WindowOptions {
-        locales: Some((res::locales::DEFAULT, res::locales::CATALOG)),
-        title_fn: Some(|| res::str::app_title().format()),
-        size: day::prelude::Size::new(480.0, 800.0),
-        ..Default::default()
-    }
+    res::window_options().size(480.0, 800.0)
 }
 
 /// The whole app: permission, viewfinder, shutter, the last photo.
@@ -96,10 +91,12 @@ pub fn root() -> impl Piece {
             labeled(
                 res::str::photo(),
                 label(move || match photo.get() {
-                    // The generated accessor takes the message's variables in sorted order:
-                    // height, name, width.
-                    Some(p) => res::str::photo_size(p.height as i64, p.file_name(), p.width as i64)
-                        .format(),
+                    Some(p) => res::str::photo_size(res::str::PhotoSize {
+                        height: p.height as i64,
+                        name: p.file_name(),
+                        width: p.width as i64,
+                    })
+                    .format(),
                     None => res::str::no_photo().format(),
                 })
                 .id("camera-photo-size"),

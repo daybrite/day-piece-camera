@@ -33,8 +33,8 @@ use std::sync::Arc;
 
 use day_core::{BuildCx, Flex, Piece, RNode, with_tree};
 use day_part_permissions::{self as perms, Permission, Status};
-use day_pieces::{IntoReactive, Reactive};
-use day_reactive::{Signal, Trigger, on_main, watch};
+use day_pieces::{Decorated, IntoReactive, Reactive};
+use day_reactive::{AnyBinding, Binding, Signal, Trigger, on_main, watch};
 use day_spec::Event;
 
 pub const KIND: &str = "day.piece.camera";
@@ -222,8 +222,8 @@ pub struct Camera {
     active: Reactive<bool>,
     auto_request: bool,
     capture: Option<Trigger>,
-    state: Option<Signal<CameraState>>,
-    photo: Option<Signal<Option<Photo>>>,
+    state: Option<AnyBinding<CameraState>>,
+    photo: Option<AnyBinding<Option<Photo>>>,
 }
 
 /// `camera()`: the rear camera's live preview, running whenever the permission is held.
@@ -238,6 +238,7 @@ pub fn camera() -> Camera {
     }
 }
 
+#[day_pieces::builder(CameraBuilder)]
 impl Camera {
     /// Which camera to show: a constant, a `Signal<Facing>`, or a `Fn() -> Facing`. When it is
     /// reactive the viewfinder switches live.
@@ -268,15 +269,15 @@ impl Camera {
         self
     }
 
-    /// Where the camera reports what it is doing.
-    pub fn state(mut self, state: Signal<CameraState>) -> Self {
-        self.state = Some(state);
+    /// Where the camera reports what it is doing: a `Signal<CameraState>` or any other binding.
+    pub fn state(mut self, state: impl Binding<CameraState>) -> Self {
+        self.state = Some(AnyBinding::new(state));
         self
     }
 
-    /// Where each capture lands.
-    pub fn photo(mut self, photo: Signal<Option<Photo>>) -> Self {
-        self.photo = Some(photo);
+    /// Where each capture lands: a `Signal<Option<Photo>>` or any other binding.
+    pub fn photo(mut self, photo: impl Binding<Option<Photo>>) -> Self {
+        self.photo = Some(AnyBinding::new(photo));
         self
     }
 }
@@ -319,6 +320,18 @@ impl Piece for Camera {
         let send = move |patch: CameraPatch| {
             with_tree(|t| t.patch(node, Box::new(patch), false));
         };
+        // A permission answer arrives on an unspecified thread, and the state binding never
+        // leaves the main one: the answer crosses back through this relay's `Setter`, and the
+        // binding is written from here.
+        let denied_relay: Signal<Option<CameraState>> = Signal::new(None);
+        watch(
+            move || denied_relay.get(),
+            move |next, _| {
+                if let Some(next) = next {
+                    set_state(next.clone());
+                }
+            },
+        );
 
         // The session follows `active`, gated on the permission. Denied and restricted are
         // reported as such; an undecided permission is asked for only under `auto_request`,
@@ -328,15 +341,15 @@ impl Piece for Camera {
             Status::Prompt if auto_request => {
                 set_state(CameraState::Starting);
                 // The completion runs on an unspecified thread; the patch has to be issued on
-                // the main thread, where the tree lives. A `Setter` is the door back for the
-                // state signal, which itself never leaves that thread.
-                let denied = state.map(|s| s.setter());
+                // the main thread, where the tree lives, and a denial reaches the state binding
+                // through the relay's `Setter`.
+                let denied = denied_relay.setter();
                 perms::request(Permission::Camera, move |status| {
                     on_main(move || {
                         if status == Status::Granted {
                             with_tree(|t| t.patch(node, Box::new(CameraPatch::Start), false));
-                        } else if let Some(denied) = denied {
-                            denied.set(CameraState::Denied);
+                        } else {
+                            denied.set(Some(CameraState::Denied));
                         }
                     });
                 });
@@ -415,63 +428,6 @@ impl Piece for Camera {
 // ---------------------------------------------------------------------------
 
 day_pieces::glue_modules!(uikit, mdc, arkui);
-
-// --- Typed builders, forwarded through `Decorated` (docs/api-style.md) ---
-
-/// [`Camera`]'s own builders, reachable through a decoration (§5.2): `day_pieces::Decorated`
-/// forwards them to the piece it wraps, so generic modifiers and typed ones chain in any order.
-pub trait CameraBuilder: Sized {
-    fn facing<M>(self, facing: impl IntoReactive<Facing, M>) -> Self;
-    fn active<M>(self, active: impl IntoReactive<bool, M>) -> Self;
-    fn auto_request(self) -> Self;
-    fn capture(self, trigger: Trigger) -> Self;
-    fn state(self, state: Signal<CameraState>) -> Self;
-    fn photo(self, photo: Signal<Option<Photo>>) -> Self;
-}
-
-impl CameraBuilder for Camera {
-    fn facing<M>(self, facing: impl IntoReactive<Facing, M>) -> Self {
-        Camera::facing(self, facing)
-    }
-    fn active<M>(self, active: impl IntoReactive<bool, M>) -> Self {
-        Camera::active(self, active)
-    }
-    fn auto_request(self) -> Self {
-        Camera::auto_request(self)
-    }
-    fn capture(self, trigger: Trigger) -> Self {
-        Camera::capture(self, trigger)
-    }
-    fn state(self, state: Signal<CameraState>) -> Self {
-        Camera::state(self, state)
-    }
-    fn photo(self, photo: Signal<Option<Photo>>) -> Self {
-        Camera::photo(self, photo)
-    }
-}
-
-impl<Inner: CameraBuilder + day_pieces::prelude::Piece> CameraBuilder
-    for day_pieces::Decorated<Inner>
-{
-    fn facing<M>(self, facing: impl IntoReactive<Facing, M>) -> Self {
-        self.map_inner(|inner| inner.facing(facing))
-    }
-    fn active<M>(self, active: impl IntoReactive<bool, M>) -> Self {
-        self.map_inner(|inner| inner.active(active))
-    }
-    fn auto_request(self) -> Self {
-        self.map_inner(|inner| inner.auto_request())
-    }
-    fn capture(self, trigger: Trigger) -> Self {
-        self.map_inner(|inner| inner.capture(trigger))
-    }
-    fn state(self, state: Signal<CameraState>) -> Self {
-        self.map_inner(|inner| inner.state(state))
-    }
-    fn photo(self, photo: Signal<Option<Photo>>) -> Self {
-        self.map_inner(|inner| inner.photo(photo))
-    }
-}
 
 #[cfg(test)]
 mod tests {
