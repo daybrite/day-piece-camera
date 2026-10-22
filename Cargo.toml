@@ -10,7 +10,7 @@ license = "MPL-2.0"
 # from git, exactly as they depend on day.
 publish = false
 
-# An external Day Piece (https://daybrite.dev/docs/extending): a cross-platform front end in Rust
+# An external Day Piece (https://daybrite.dev/contributing/extending): a cross-platform front end in Rust
 # (src/lib.rs) plus a native camera behind it on each mobile platform, registered link-time into
 # each backend's renderer slice without touching any day crate:
 #   iOS       — AVFoundation through this crate's Swift shim   ([package.metadata.day.ios])
@@ -47,7 +47,7 @@ compat = "0.5"
 [package.metadata.day.piece]
 backends = ["appkit", "gtk", "qt", "uikit", "mdc", "xaml", "arkui", "dom", "mock"]
 
-# The portable permission this piece needs (https://daybrite.dev/docs/guide-permissions). `day
+# The portable permission this piece needs (https://daybrite.dev/docs/how-to/guide-permissions). `day
 # build` turns it into `android.permission.CAMERA`, `NSCameraUsageDescription` and
 # `ohos.permission.CAMERA`; the app supplies the reason (`[permissions] camera = "…"` in Day.toml,
 # or `permission_camera` in its catalogs); on iOS and HarmonyOS a build without one fails

@@ -19,7 +19,7 @@ use day_piece_remote_image::remote_image;
 // The mobile entry point; a plain cargo desktop build enters through src/main.rs.
 day::day_start!(options: window(), root);
 
-// Typed constants for everything under `resource/` (https://daybrite.dev/docs/resources).
+// Typed constants for everything under `resource/` (https://daybrite.dev/docs/how-to/resources).
 day::resources!();
 
 /// The window every entry point opens.

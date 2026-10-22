@@ -1,4 +1,4 @@
-# The demo's walkthrough (https://daybrite.dev/docs/dayscript), and the crate's on-device test:
+# The demo's walkthrough (https://daybrite.dev/docs/how-to/dayscript), and the crate's on-device test:
 # CI runs it on the iOS Simulator and the HarmonyOS emulator, and the same command runs it here.
 #
 #     day launch -p ios-uikit --script dayscript/camera.yaml
