@@ -39,7 +39,7 @@ camera()
 
 A `Photo` is `{ path, width, height }`: a JPEG under the app's cache directory
 (`day-camera/<uuid>.jpg`) that the app may keep, move or delete. `bytes()` reads it as
-`Arc<Vec<u8>>`, the shape `day-piece-remote-image` displays. The photo library is never touched.
+`Arc<Vec<u8>>`, the shape `day::async_image` displays. The photo library is never touched.
 
 ## Permission
 

@@ -32,7 +32,6 @@ day-piece-camera = { path = ".." }
 # The page asks for the camera permission itself, before the viewfinder starts.
 day-part-permissions = { git = "https://github.com/daybrite/day.git" }
 # Shows the last photo from its bytes.
-day-piece-remote-image = { git = "https://github.com/daybrite/day.git" }
 
 [build-dependencies]
 day-build = { git = "https://github.com/daybrite/day.git" }

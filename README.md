@@ -26,7 +26,7 @@ a capture trigger, and signals reporting session state and the latest photo. A
 
 Photos are files in the app's cache directory, with a path, width, and height in
 `Photo`. `Photo::bytes()` reads a file into `Arc<Vec<u8>>`, which can be displayed
-with Day's `day-piece-remote-image`. The crate does not save to the photo library;
+with Day's `day::async_image`. The crate does not save to the photo library;
 move or copy captures to persistent storage if the app needs to keep them.
 
 ## Platform support and limitations

@@ -14,7 +14,7 @@ use std::sync::Arc;
 use day::prelude::*;
 use day_part_permissions::{self as perms, Permission, Status};
 use day_piece_camera::{CameraState, Facing, Photo, camera};
-use day_piece_remote_image::remote_image;
+use day::async_image::async_image;
 
 // The mobile entry point; a plain cargo desktop build enters through src/main.rs.
 day::day_start!(options: window(), root);
@@ -83,7 +83,7 @@ pub fn root() -> impl Piece {
             when(
                 move || bytes.get().is_some(),
                 move || {
-                    column((remote_image(bytes)
+                    column((async_image(bytes)
                         .frame(240.0, 180.0)
                         .id(day::id!(camera_photo)),))
                     .align(HAlign::Center)
