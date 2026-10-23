@@ -3,8 +3,8 @@
 
 // The day-piece-camera crate's Android backend: a Java shim over CameraX. It is bundled with
 // This crate and folded into the app's Gradle build via [package.metadata.day.android] (which
-// also declares the CameraX dependencies), with no edits to day-android. It uses only
-// day-android's public surface: DayBridge.ctx (the Context) and DayBridge.nativeOnEvent (the
+// also declares the CameraX dependencies), with no edits to day-mdc. It uses only
+// day-mdc's public surface: DayBridge.ctx (the Context) and DayBridge.nativeOnEvent (the
 // event trampoline). It is the Android twin of platform/ios/swift/DayCamera.swift.
 package dev.daybrite.day.piece.camera;
 

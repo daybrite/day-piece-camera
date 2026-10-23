@@ -25,7 +25,7 @@ publish = false
 
 [features]
 uikit = ["dep:day-uikit", "dep:objc2", "dep:objc2-ui-kit"]
-mdc = ["dep:day-android"]
+mdc = ["dep:day-mdc", "dep:day-android-runtime"]
 arkui = ["dep:day-arkui", "dep:cc"]
 # The desktops and the web have no camera arm. Each feature exists so `day` can union
 # `<pkg>/<backend>` into any app build uniformly; the kind then falls back to day's placeholder
@@ -64,7 +64,8 @@ day-reactive = { git = "https://github.com/daybrite/day.git" }
 # app opts in with `.auto_request()`. Headless, so it rides on every target.
 day-part-permissions = { git = "https://github.com/daybrite/day.git" }
 day-uikit = { git = "https://github.com/daybrite/day.git", optional = true }
-day-android = { git = "https://github.com/daybrite/day.git", optional = true }
+day-mdc = { git = "https://github.com/daybrite/day.git", optional = true }
+day-android-runtime = { git = "https://github.com/daybrite/day.git", optional = true }
 day-arkui = { git = "https://github.com/daybrite/day.git", optional = true }
 log = "0.4"
 linkme = "0.3"
