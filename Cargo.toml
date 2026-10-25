@@ -24,9 +24,9 @@ publish = false
 # choose one revision for the whole graph. `compat` below says which day minor that is.
 
 [features]
-uikit = ["dep:day-uikit", "dep:objc2", "dep:objc2-ui-kit"]
-mdc = ["dep:day-mdc", "dep:day-android-runtime"]
-arkui = ["dep:day-arkui", "dep:cc"]
+uikit = ["dep:day-toolkit-uikit", "dep:objc2", "dep:objc2-ui-kit"]
+material = ["dep:day-toolkit-material", "dep:day-platform-android"]
+arkui = ["dep:day-toolkit-arkui", "dep:cc"]
 # The desktops and the web have no camera arm. Each feature exists so `day` can union
 # `<pkg>/<backend>` into any app build uniformly; the kind then falls back to day's placeholder
 # leaf, and `support()` answers Unsupported so an app can hide its own UI.
@@ -39,13 +39,13 @@ mock = []
 
 [package.metadata.day]
 # The day minor this release is built and tested against. `day build` notes a mismatch.
-compat = "0.5"
+compat = "0.6"
 
 # Backends this piece carries a [features] entry for. `day` unions `<pkg>/<backend>` into an
 # app build, so an app depends on this piece with a plain `{ git = "…" }` line, with no
 # per-backend feature fan-out in its Cargo.toml.
 [package.metadata.day.piece]
-backends = ["appkit", "gtk", "qt", "uikit", "mdc", "xaml", "arkui", "dom", "mock"]
+backends = ["appkit", "gtk", "qt", "uikit", "material", "xaml", "arkui", "dom", "mock"]
 
 # The portable permission this piece needs (https://daybrite.dev/docs/how-to/guide-permissions). `day
 # build` turns it into `android.permission.CAMERA`, `NSCameraUsageDescription` and
@@ -63,10 +63,10 @@ day-reactive = { git = "https://github.com/daybrite/day.git" }
 # The piece checks the camera permission before it starts a session, and asks for it when the
 # app opts in with `.auto_request()`. Headless, so it rides on every target.
 day-part-permissions = { git = "https://github.com/daybrite/day.git" }
-day-uikit = { git = "https://github.com/daybrite/day.git", optional = true }
-day-mdc = { git = "https://github.com/daybrite/day.git", optional = true }
-day-android-runtime = { git = "https://github.com/daybrite/day.git", optional = true }
-day-arkui = { git = "https://github.com/daybrite/day.git", optional = true }
+day-toolkit-uikit = { git = "https://github.com/daybrite/day.git", optional = true }
+day-toolkit-material = { git = "https://github.com/daybrite/day.git", optional = true }
+day-platform-android = { git = "https://github.com/daybrite/day.git", optional = true }
+day-toolkit-arkui = { git = "https://github.com/daybrite/day.git", optional = true }
 log = "0.4"
 linkme = "0.3"
 objc2 = { version = "0.6", optional = true }

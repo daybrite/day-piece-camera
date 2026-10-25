@@ -3,7 +3,7 @@
 # device between the install and the start, and CI's Android leg does exactly that
 # (`grant-permissions` in ../../.github/workflows/ci.yml) and runs this script there.
 #
-#     day launch -p android-mdc --grant camera --script dayscript/camera-capture.yaml
+#     day launch -p android-material --grant camera --script dayscript/camera-capture.yaml
 #
 # Then this script proves the capture path: the session runs, the shutter writes a JPEG into
 # the app's cache, and the page shows it. The Android emulator's virtual camera makes the whole

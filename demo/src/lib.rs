@@ -11,10 +11,10 @@
 
 use std::sync::Arc;
 
+use day::async_image::async_image;
 use day::prelude::*;
 use day_part_permissions::{self as perms, Permission, Status};
 use day_piece_camera::{CameraState, Facing, Photo, camera};
-use day::async_image::async_image;
 
 // The mobile entry point; a plain cargo desktop build enters through src/main.rs.
 day::day_start!(options: window(), root);

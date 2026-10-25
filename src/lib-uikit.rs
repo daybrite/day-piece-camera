@@ -14,7 +14,7 @@ use std::ffi::CStr;
 use std::os::raw::{c_char, c_int, c_void};
 
 use day_spec::NodeId;
-use day_uikit::Uikit;
+use day_toolkit_uikit::Uikit;
 use objc2::rc::Retained;
 use objc2_ui_kit::UIView;
 
@@ -42,7 +42,7 @@ unsafe extern "C" fn report(node: u64, num: f64, text: *const c_char) {
         } else {
             unsafe { CStr::from_ptr(text) }.to_string_lossy().into_owned()
         };
-        day_uikit::emit(
+        day_toolkit_uikit::emit(
             NodeId(node),
             Event::Custom {
                 tag: "",
@@ -79,6 +79,6 @@ fn release(_backend: &mut Uikit, h: &Retained<UIView>) {
     unsafe { day_camera_release(ptr) };
 }
 
-day_pieces::renderer!(day_uikit::RENDERERS, Uikit,
+day_pieces::renderer!(day_toolkit_uikit::RENDERERS, Uikit,
     kind: KIND, props: CameraProps, patch: CameraPatch, make: make, update: update,
     measure: day_pieces::fill_measure, release: release);

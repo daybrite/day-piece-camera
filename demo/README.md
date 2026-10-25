@@ -15,7 +15,7 @@ land in one pull request and one CI run.
 ```sh
 day doctor                                            # the iOS and Android toolchains
 day launch -p ios-uikit --script dayscript/camera.yaml
-day launch -p android-mdc --script dayscript/camera.yaml
+day launch -p android-material --script dayscript/camera.yaml
 ```
 
 The script asserts the page before the permission is granted and captures one screenshot under
@@ -28,7 +28,7 @@ Taking a photo needs the permission, which only an OS dialog can grant. `--grant
 it on the device before the app starts, so the capture script never meets the dialog:
 
 ```sh
-day launch -p android-mdc --grant camera --script dayscript/camera-capture.yaml
+day launch -p android-material --grant camera --script dayscript/camera-capture.yaml
 ```
 
 The Android emulator's virtual camera makes the whole path real. The iOS Simulator has no

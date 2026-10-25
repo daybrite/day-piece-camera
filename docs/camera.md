@@ -8,7 +8,7 @@ Copyright © The Daybrite Project
 SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
-> **Status: shipped** on ios-uikit and android-mdc; harmony-arkui compiles and links but is
+> **Status: shipped** on ios-uikit and android-material; harmony-arkui compiles and links but is
 > unverified on hardware.
 
 `camera()` is a leaf piece: the platform's live preview, a command to take a photo, and the

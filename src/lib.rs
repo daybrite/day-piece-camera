@@ -206,7 +206,7 @@ impl Photo {
 pub fn support() -> day_spec::Support {
     if cfg!(any(
         all(feature = "uikit", target_os = "ios"),
-        all(feature = "mdc", target_os = "android"),
+        all(feature = "material", target_os = "android"),
         all(feature = "arkui", target_env = "ohos"),
     )) {
         day_spec::Support::Native
@@ -427,7 +427,7 @@ impl Piece for Camera {
 // link-time into its backend's `RENDERERS` slice; `#[cfg]` gates each to its feature + target.
 // ---------------------------------------------------------------------------
 
-day_pieces::glue_modules!(uikit, mdc, arkui);
+day_pieces::glue_modules!(uikit, material, arkui);
 
 #[cfg(test)]
 mod tests {

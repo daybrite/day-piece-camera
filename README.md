@@ -34,7 +34,7 @@ move or copy captures to persistent storage if the app needs to keep them.
 | Day target | Implementation | Limitations |
 |---|---|---|
 | `ios-uikit` | [AVFoundation capture sessions](https://developer.apple.com/documentation/avfoundation/setting-up-a-capture-session), preview and photo output | Physical device required for capture; the iOS Simulator reports `Unavailable`. Below iOS 17, the preview is fixed portrait. |
-| `android-mdc` | [CameraX (`androidx.camera`)](https://developer.android.com/jetpack/androidx/releases/camera), preview and image capture; [architecture guide](https://developer.android.com/media/camera/camerax/architecture) | Requires a usable camera and permission; the emulator's virtual camera supports the capture path. |
+| `android-material` | [CameraX (`androidx.camera`)](https://developer.android.com/jetpack/androidx/releases/camera), preview and image capture; [architecture guide](https://developer.android.com/media/camera/camerax/architecture) | Requires a usable camera and permission; the emulator's virtual camera supports the capture path. |
 | `harmony-arkui` | ArkUI surface and [OpenHarmony native camera API (`OH_Camera`)](https://github.com/openharmony/docs/blob/master/en/application-dev/reference/apis-camera-kit/capi-oh-camera.md) | Compiles and links, but is unverified on hardware. |
 | Desktop, web, mock | No camera renderer | The piece becomes a placeholder; `support()` returns `Unsupported`. |
 
@@ -98,7 +98,7 @@ session, `.facing(signal)` switches cameras, and removing the piece stops its se
 Gate camera navigation with `support()` on apps that also target desktop or web.
 
 With the chosen target configured in your app and its platform SDK installed, run
-`day build -p android-mdc` or `day launch -p ios-uikit`. Day reads the crate's backend
+`day build -p android-material` or `day launch -p ios-uikit`. Day reads the crate's backend
 metadata and enables its matching feature; you do not need to forward camera
 features in your app. Use Day's build pipeline to include the native sources.
 
@@ -116,10 +116,10 @@ link time through [linkme](https://github.com/dtolnay/linkme).
 
 | Layer | Dependencies and responsibility |
 |---|---|
-| Shared Rust | [day-core](https://github.com/daybrite/day/tree/main/crates/day-core) for the piece/tree, [day-spec](https://github.com/daybrite/day/tree/main/crates/day-spec) for types/events, [day-pieces](https://github.com/daybrite/day/tree/main/crates/day-pieces) for builders, [day-reactive](https://github.com/daybrite/day/tree/main/crates/day-reactive) for bindings, [day-part-permissions](https://github.com/daybrite/day/tree/main/parts/day-part-permissions) for permission checks, [log](https://github.com/rust-lang/log) for diagnostics, [linkme](https://github.com/dtolnay/linkme) for registration. |
-| iOS | Optional [day-uikit](https://github.com/daybrite/day/tree/main/toolkits/day-uikit), [objc2](https://github.com/madsmtm/objc2) 0.6 and [objc2-ui-kit](https://github.com/madsmtm/objc2) 0.3. A Swift shim calls system AVFoundation; Day stages it into the app's Swift build. |
-| Android | Optional [day-mdc](https://github.com/daybrite/day/tree/main/toolkits/day-mdc) provides the JNI/backend boundary. Gradle adds CameraX `camera-core`, `camera-camera2`, `camera-lifecycle`, and `camera-view`, each at 1.5.1, plus their transitive dependencies. |
-| HarmonyOS | Optional [day-arkui](https://github.com/daybrite/day/tree/main/toolkits/day-arkui) and build dependency [cc](https://github.com/rust-lang/cc-rs) 1. `build.rs` compiles the C++ camera shim; the native implementation links `ohcamera`, `ohimage`, and `native_window`. Day stages the ArkTS surface code. |
+| Shared Rust | [day-core](https://github.com/daybrite/day/tree/main/crates/day-core) for the piece/tree, [day-spec](https://github.com/daybrite/day/tree/main/crates/day-spec) for types/events, [day-pieces](https://github.com/daybrite/day/tree/main/crates/day-pieces) for builders, [day-reactive](https://github.com/daybrite/day/tree/main/crates/day-reactive) for bindings, [day-part-permissions](https://github.com/daybrite/day/tree/main/crates/day-part-permissions) for permission checks, [log](https://github.com/rust-lang/log) for diagnostics, [linkme](https://github.com/dtolnay/linkme) for registration. |
+| iOS | Optional [day-toolkit-uikit](https://github.com/daybrite/day/tree/main/crates/day-toolkit-uikit), [objc2](https://github.com/madsmtm/objc2) 0.6 and [objc2-ui-kit](https://github.com/madsmtm/objc2) 0.3. A Swift shim calls system AVFoundation; Day stages it into the app's Swift build. |
+| Android | Optional [day-toolkit-material](https://github.com/daybrite/day/tree/main/crates/day-toolkit-material) provides the JNI/backend boundary. Gradle adds CameraX `camera-core`, `camera-camera2`, `camera-lifecycle`, and `camera-view`, each at 1.5.1, plus their transitive dependencies. |
+| HarmonyOS | Optional [day-toolkit-arkui](https://github.com/daybrite/day/tree/main/crates/day-toolkit-arkui) and build dependency [cc](https://github.com/rust-lang/cc-rs) 1. `build.rs` compiles the C++ camera shim; the native implementation links `ohcamera`, `ohimage`, and `native_window`. Day stages the ArkTS surface code. |
 | Tests | [day-mock](https://github.com/daybrite/day/tree/main/crates/day-mock) supplies the headless test backend. |
 
 The iOS shim configures the session on a serial queue and reports on the main queue.
@@ -142,9 +142,9 @@ For a local framework checkout, run `day patch --local ../day` from this reposit
 by path and is a complete integration example.
 
 Run `cargo test` for the host-side checks. From `demo/`, run
-`day launch -p android-mdc --script dayscript/camera.yaml` for the walkthrough.
+`day launch -p android-material --script dayscript/camera.yaml` for the walkthrough.
 The separate `dayscript/camera-capture.yaml` takes a photo and needs the permission granted
-first, since Day scripts cannot dismiss the OS permission dialog: `day launch -p android-mdc
+first, since Day scripts cannot dismiss the OS permission dialog: `day launch -p android-material
 --grant camera --script dayscript/camera-capture.yaml` marks it on the emulator before the app
 starts. CI launches that way on its Android leg and runs the capture script there on every
 push, beside the walkthrough on the iOS Simulator and the HarmonyOS emulator. Validate capture on a real iPhone and on the intended HarmonyOS

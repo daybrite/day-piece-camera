@@ -11,7 +11,7 @@ publish = false
 # `--no-default-features --features <backend>` (https://daybrite.dev/docs/reference/project-structure).
 default = ["mock"]
 uikit = ["day/uikit"]
-mdc = ["day/mdc"]
+material = ["day/material"]
 arkui = ["day/arkui"]
 mock = ["day/mock"]
 

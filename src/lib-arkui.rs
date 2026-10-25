@@ -18,7 +18,7 @@ use std::collections::HashMap;
 use std::ffi::{CStr, CString};
 use std::os::raw::{c_char, c_int, c_void};
 
-use day_arkui::{AHandle, ArkUi, piece};
+use day_toolkit_arkui::{AHandle, ArkUi, piece};
 use day_spec::NodeId;
 
 /// The report callback the shim calls from whatever thread the camera service uses.
@@ -47,7 +47,7 @@ day_core::tls_group! {
     static CAMS: RefCell<HashMap<usize, usize>> = RefCell::new(HashMap::new());
 }
 
-/// The event kind day-arkui's trampoline maps to `Event::Custom`.
+/// The event kind day-toolkit-arkui's trampoline maps to `Event::Custom`.
 const K_CUSTOM: c_int = 12;
 
 /// Reports arrive from the camera service's threads; the tree lives on the JS thread, so each
@@ -63,7 +63,7 @@ unsafe extern "C" fn report(node: u64, num: f64, text: *const c_char) {
             let Ok(text) = CString::new(text) else {
                 return;
             };
-            day_arkui::day_arkui_on_event(node, K_CUSTOM, num, text.as_ptr());
+            day_toolkit_arkui::day_arkui_on_event(node, K_CUSTOM, num, text.as_ptr());
         });
     });
 }
@@ -117,6 +117,6 @@ fn release(_backend: &mut ArkUi, h: &AHandle) {
     }
 }
 
-day_pieces::renderer!(day_arkui::RENDERERS, ArkUi,
+day_pieces::renderer!(day_toolkit_arkui::RENDERERS, ArkUi,
     kind: KIND, props: CameraProps, patch: CameraPatch, make: make, update: update,
     measure: day_pieces::fill_measure, release: release);

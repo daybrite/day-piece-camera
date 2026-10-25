@@ -6,7 +6,7 @@ schema = 1
 id = "dev.daybrite.camerademo"
 title = "Camera Demo"
 build = 1
-targets = ["ios-uikit", "android-mdc", "harmony-arkui"]
+targets = ["ios-uikit", "android-material", "harmony-arkui"]
 
 # The window's geometry in points (https://daybrite.dev/docs/reference/size-classes). `width`/`height` are
 # the desktop default and the size a desktop-windowing Android window opens at; the minimum is

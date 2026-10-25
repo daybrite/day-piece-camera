@@ -2,7 +2,7 @@
 # CI runs it on the iOS Simulator and the HarmonyOS emulator, and the same command runs it here.
 #
 #     day launch -p ios-uikit --script dayscript/camera.yaml
-#     day launch -p android-mdc --script dayscript/camera.yaml
+#     day launch -p android-material --script dayscript/camera.yaml
 #
 # Status only. The Allow button raises an OS permission dialog, which dayscript cannot dismiss,
 # so it is never tapped here: the state reads `idle` while the permission is undecided. The

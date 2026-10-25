@@ -47,7 +47,7 @@ jobs:
       matrix:
         include:
           - { os: macos-15, target: aarch64-apple-ios-sim, features: uikit }
-          - { os: ubuntu-latest, target: aarch64-linux-android, features: mdc }
+          - { os: ubuntu-latest, target: aarch64-linux-android, features: material }
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
@@ -76,13 +76,13 @@ jobs:
     secrets: inherit
     with:
       project-path: demo
-      targets: ios-uikit, android-mdc, harmony-arkui
+      targets: ios-uikit, android-material, harmony-arkui
       update-day-deps: true
       scripts: dayscript/camera.yaml
       target-scripts: |
-        android-mdc: dayscript/camera-capture.yaml
+        android-material: dayscript/camera-capture.yaml
       grant-permissions: |
-        android-mdc: camera
+        android-material: camera
       preflight-checks: fmt, clippy, test
       ios-devices: |
         device=iPhone, orientation=portrait
