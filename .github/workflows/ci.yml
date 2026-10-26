@@ -4,18 +4,25 @@ name: ci
 #   host        does the crate build, lint, and pass its host tests?
 #   cross-check do the native halves compile for the targets they claim?
 #   demo        does the walkthrough pass on the iOS Simulator, the Android emulator and the
-#               HarmonyOS emulator, against day's newest main?
+#               HarmonyOS emulator, against day's main or newest release?
 #
-# No Cargo.lock is committed, here or in demo/: this crate tracks an unpublished framework by
-# its bare git URL, so every run resolves day afresh at the tip of main and proves the crate
-# against it. A red run after a day push is the signal, not a nuisance, and there is no pinned
-# lock for a local `day patch` table to rewrite and commit by accident.
+# No Cargo.lock is committed, here or in demo/: every run resolves day afresh. A push builds against the
+# head of day's main (and of every other Day repository it uses), and the nightly run against
+# the newest releases on crates.io (daybrite/actions' day-deps). A red push run after a day push
+# is the signal, not a nuisance; a red nightly run means this crate needs a day that is not
+# released yet. There is no pinned lock for a local `day patch` table to rewrite and commit by
+# accident.
 on:
   push:
     branches: ["**"]
     tags: ["v[0-9]+.[0-9]+.[0-9]+*"]
   pull_request:
   workflow_dispatch:
+    inputs:
+      day-main:
+        description: Build against day's main branch instead of the newest release
+        type: boolean
+        default: false
   schedule:
     # Daily: day's main moves, and so does CameraX, on weeks nobody pushes.
     - cron: "0 7 * * *"
@@ -32,6 +39,10 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
+      # Day from crates.io, or from main on a push (daybrite/actions day-deps).
+      - uses: daybrite/actions/.github/actions/day-deps@v1
+        with:
+          day-deps: ${{ inputs.day-main && 'main' || 'auto' }}
       - run: cargo fmt --all -- --check
       - run: cargo clippy --all-targets -- -D warnings
       # The pure half: report decoding, photo payloads, state labels.
@@ -54,10 +65,14 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
+      # Day from crates.io, or from main on a push (daybrite/actions day-deps).
+      - uses: daybrite/actions/.github/actions/day-deps@v1
+        with:
+          day-deps: ${{ inputs.day-main && 'main' || 'auto' }}
       - run: cargo clippy --target ${{ matrix.target }} --features ${{ matrix.features }} -- -D warnings
 
   # The proof: the demo app, driven end to end on each platform by the shared Day workflow. It
-  # builds against day's newest main, runs the walkthrough, and fails on a failed assertion or a
+  # builds against day's main or newest release, runs the walkthrough, and fails on a failed assertion or a
   # blank capture. Screenshots are uploaded per target, and a tag build attaches them to the
   # release. The HarmonyOS leg is where the C shim meets the NDK and links.
   #
@@ -73,11 +88,14 @@ jobs:
     uses: daybrite/actions/.github/workflows/dayapp.yml@v1
     permissions:
       contents: write # release-asset upload on tag builds
+      id-token: write # crates.io Trusted Publishing (publish-crates)
     secrets: inherit
     with:
       project-path: demo
       targets: ios-uikit, android-material, harmony-arkui
-      update-day-deps: true
+      day-deps: ${{ inputs.day-main && 'main' || 'auto' }}
+      # On a version tag, after every leg passed: the library crates to crates.io.
+      publish-crates: true
       scripts: dayscript/camera.yaml
       target-scripts: |
         android-material: dayscript/camera-capture.yaml

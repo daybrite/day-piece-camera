@@ -6,9 +6,6 @@ rust-version = "1.89"
 description = "A camera viewfinder with photo capture for Day apps on iOS, Android and HarmonyOS"
 repository = "https://github.com/daybrite/day-piece-camera"
 license = "MPL-2.0"
-# The day framework crates are not on crates.io yet; neither is this one. Apps depend on it
-# from git, exactly as they depend on day.
-publish = false
 
 # An external Day Piece (https://daybrite.dev/contributing/extending): a cross-platform front end in Rust
 # (src/lib.rs) plus a native camera behind it on each mobile platform, registered link-time into
@@ -56,17 +53,17 @@ backends = ["appkit", "gtk", "qt", "uikit", "material", "xaml", "arkui", "dom", 
 uses = ["camera"]
 
 [dependencies]
-day-spec = { git = "https://github.com/daybrite/day.git" }
-day-core = { git = "https://github.com/daybrite/day.git" }
-day-pieces = { git = "https://github.com/daybrite/day.git" }
-day-reactive = { git = "https://github.com/daybrite/day.git" }
+day-spec = "0.6"
+day-core = "0.6"
+day-pieces = "0.6"
+day-reactive = "0.6"
 # The piece checks the camera permission before it starts a session, and asks for it when the
 # app opts in with `.auto_request()`. Headless, so it rides on every target.
-day-part-permissions = { git = "https://github.com/daybrite/day.git" }
-day-toolkit-uikit = { git = "https://github.com/daybrite/day.git", optional = true }
-day-toolkit-material = { git = "https://github.com/daybrite/day.git", optional = true }
-day-platform-android = { git = "https://github.com/daybrite/day.git", optional = true }
-day-toolkit-arkui = { git = "https://github.com/daybrite/day.git", optional = true }
+day-part-permissions = "0.6"
+day-toolkit-uikit = { version = "0.6", optional = true }
+day-toolkit-material = { version = "0.6", optional = true }
+day-platform-android = { version = "0.6", optional = true }
+day-toolkit-arkui = { version = "0.6", optional = true }
 log = "0.4"
 linkme = "0.3"
 objc2 = { version = "0.6", optional = true }
@@ -77,7 +74,7 @@ objc2-ui-kit = { version = "0.3", optional = true, features = ["UIView", "UIResp
 cc = { version = "1", optional = true }
 
 [dev-dependencies]
-day-mock = { git = "https://github.com/daybrite/day.git" }
+day-mock = "0.6"
 
 # --- Android backend contribution ---
 # The day CLI reads this from `cargo metadata` and folds it into the app's Gradle build.

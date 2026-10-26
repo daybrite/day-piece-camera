@@ -50,7 +50,7 @@ its `Cargo.toml`:
 
 ```toml
 [dependencies]
-day-piece-camera = { git = "https://github.com/daybrite/day-piece-camera.git" }
+day-piece-camera = "0.1"
 ```
 
 Add an app-specific camera explanation to `Day.toml`, merging it into any existing
