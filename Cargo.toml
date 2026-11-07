@@ -15,10 +15,8 @@ license = "MPL-2.0"
 #   HarmonyOS — the NDK camera kit through this crate's C shim, behind an ArkTS XComponent
 #               surface                                          ([package.metadata.day.ohos], build.rs)
 #
-# Every day dependency names the bare canonical URL: no branch, tag, or rev. Cargo unifies a git
-# dependency only when URL and ref match, so an app on `git = "…/day.git"` and a piece pinned to
-# a tag would carry two copies of every day crate; leaving the ref off lets the app's Cargo.lock
-# choose one revision for the whole graph. `compat` below says which day minor that is.
+# Daybrite-owned dependencies accept every stable 0.x release. Apps retain a tested
+# dependency set with Cargo.lock; updating it may require source changes.
 
 [features]
 uikit = ["dep:day-toolkit-uikit", "dep:objc2", "dep:objc2-ui-kit"]
@@ -35,8 +33,8 @@ dom = []
 mock = []
 
 [package.metadata.day]
-# The day minor this release is built and tested against. `day build` notes a mismatch.
-compat = "0.6"
+# Accept the pre-1.0 series; source compatibility between releases is not guaranteed.
+compat = "0.*"
 
 # Backends this piece carries a [features] entry for. `day` unions `<pkg>/<backend>` into an
 # app build, so an app depends on this piece with a plain `{ git = "…" }` line, with no
@@ -53,17 +51,17 @@ backends = ["appkit", "gtk", "qt", "uikit", "material", "xaml", "arkui", "dom", 
 uses = ["camera"]
 
 [dependencies]
-day-spec = "0.6"
-day-core = "0.6"
-day-pieces = "0.6"
-day-reactive = "0.6"
+day-spec = "0.*"
+day-core = "0.*"
+day-pieces = "0.*"
+day-reactive = "0.*"
 # The piece checks the camera permission before it starts a session, and asks for it when the
 # app opts in with `.auto_request()`. Headless, so it rides on every target.
-day-part-permissions = "0.6"
-day-toolkit-uikit = { version = "0.6", optional = true }
-day-toolkit-material = { version = "0.6", optional = true }
-day-platform-android = { version = "0.6", optional = true }
-day-toolkit-arkui = { version = "0.6", optional = true }
+day-part-permissions = "0.*"
+day-toolkit-uikit = { version = "0.*", optional = true }
+day-toolkit-material = { version = "0.*", optional = true }
+day-platform-android = { version = "0.*", optional = true }
+day-toolkit-arkui = { version = "0.*", optional = true }
 log = "0.4"
 linkme = "0.3"
 objc2 = { version = "0.6", optional = true }
@@ -74,7 +72,7 @@ objc2-ui-kit = { version = "0.3", optional = true, features = ["UIView", "UIResp
 cc = { version = "1", optional = true }
 
 [dev-dependencies]
-day-mock = "0.6"
+day-mock = "0.*"
 
 # --- Android backend contribution ---
 # The day CLI reads this from `cargo metadata` and folds it into the app's Gradle build.

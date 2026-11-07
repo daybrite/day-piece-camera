@@ -24,16 +24,16 @@ crate-type = ["rlib"]
 [dependencies]
 # The bare canonical URL, no ref: with no lock committed CI resolves day afresh at the tip of
 # main on every run. See ../Cargo.toml for why a ref would double the graph.
-day = { package = "day-app", version = "0.6" }
+day = { package = "day-app", version = "0.*" }
 # The piece under test, by path: a change to the piece and to the demo land in one pull request
-# and one CI run. An app depends on it from git instead:
-#     day-piece-camera = { git = "https://github.com/daybrite/day-piece-camera.git" }
-day-piece-camera = { path = ".." }
+# and one CI run. Other apps use the published crate:
+#     day-piece-camera = "0.*"
+day-piece-camera = { version = "0.*", path = ".." }
 # The page asks for the camera permission itself, before the viewfinder starts.
-day-part-permissions = "0.6"
+day-part-permissions = "0.*"
 # Shows the last photo from its bytes.
 
 [build-dependencies]
-day-build = "0.6"
+day-build = "0.*"
 
 [workspace]
