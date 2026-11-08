@@ -52,16 +52,16 @@ pub fn root() -> impl Piece {
                 .font(Font::Title)
                 .id(day::id!(camera_title)),
             permission_row(active),
-            column((camera()
+            camera()
                 .facing(facing)
                 .active(active)
                 .capture(shutter)
                 .state(state)
                 .photo(photo)
                 .frame(320.0, 240.0)
-                .id(day::id!(camera_view)),))
-            .align(HAlign::Center)
-            .grow_w(),
+                .id(day::id!(camera_view))
+                .aligned(Alignment::Center)
+                .grow(Dimension::Width),
             row((
                 button(res::str::take_photo())
                     .prominent()
@@ -83,11 +83,11 @@ pub fn root() -> impl Piece {
             when(
                 move || bytes.get().is_some(),
                 move || {
-                    column((async_image(bytes)
+                    async_image(bytes)
                         .frame(240.0, 180.0)
-                        .id(day::id!(camera_photo)),))
-                    .align(HAlign::Center)
-                    .grow_w()
+                        .id(day::id!(camera_photo))
+                        .aligned(Alignment::Center)
+                        .grow(Dimension::Width)
                 },
             ),
             labeled(
