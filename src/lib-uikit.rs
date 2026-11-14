@@ -60,7 +60,7 @@ fn make(_backend: &mut Uikit, p: &CameraProps, id: NodeId) -> Retained<UIView> {
 }
 
 fn update(_backend: &mut Uikit, h: &Retained<UIView>, patch: &CameraPatch) {
-    let ptr = (&**h as *const UIView) as *mut c_void;
+    let ptr = (&raw const **h) as *mut c_void;
     let (cmd, arg) = match patch {
         CameraPatch::Start => (CMD_START, 0),
         CameraPatch::Stop => (CMD_STOP, 0),
@@ -75,7 +75,7 @@ fn update(_backend: &mut Uikit, h: &Retained<UIView>, patch: &CameraPatch) {
 /// The renderer's release: stop the session so the camera is freed the moment the page goes
 /// away, not when the view happens to deallocate.
 fn release(_backend: &mut Uikit, h: &Retained<UIView>) {
-    let ptr = (&**h as *const UIView) as *mut c_void;
+    let ptr = (&raw const **h) as *mut c_void;
     unsafe { day_camera_release(ptr) };
 }
 

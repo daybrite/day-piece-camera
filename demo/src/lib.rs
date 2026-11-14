@@ -94,9 +94,9 @@ pub fn root() -> impl Piece {
                 res::str::photo(),
                 label(move || match photo.get() {
                     Some(p) => res::str::photo_size(res::str::PhotoSize {
-                        height: p.height as i64,
+                        height: i64::from(p.height),
                         name: p.file_name(),
-                        width: p.width as i64,
+                        width: i64::from(p.width),
                     })
                     .format(),
                     None => res::str::no_photo().format(),

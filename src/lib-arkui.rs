@@ -77,7 +77,7 @@ fn make(_backend: &mut ArkUi, p: &CameraProps, id: NodeId) -> AHandle {
         day_camera_ohos_new(
             id.0,
             p.facing.code(),
-            p.active as c_int,
+            c_int::from(p.active),
             cache.as_ptr(),
             report,
         )

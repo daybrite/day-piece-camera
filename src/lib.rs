@@ -59,6 +59,7 @@ impl Facing {
     }
 
     /// The other camera.
+    #[must_use]
     pub fn flipped(self) -> Facing {
         match self {
             Facing::Back => Facing::Front,
@@ -187,6 +188,10 @@ impl Photo {
 
     /// The JPEG bytes, read from the cache file; shared, since a photo is large and a viewer
     /// keeps a reference to it.
+    ///
+    /// # Errors
+    ///
+    /// Returns the I/O error when the cache file cannot be read.
     pub fn bytes(&self) -> io::Result<Arc<Vec<u8>>> {
         std::fs::read(&self.path).map(Arc::new)
     }
@@ -217,6 +222,7 @@ pub fn support() -> day_spec::Support {
 
 /// A native camera viewfinder. Bind the session to `.active(signal)`, take photos with
 /// `.capture(trigger)`, and read them back through `.photo(signal)`.
+#[must_use]
 pub struct Camera {
     facing: Reactive<Facing>,
     active: Reactive<bool>,
@@ -396,7 +402,7 @@ impl Piece for Camera {
         if let Some(capture) = capture {
             watch(
                 move || capture.track(),
-                move |_, _| send(CameraPatch::Capture),
+                move |(), _| send(CameraPatch::Capture),
             );
         }
         cx.on(node, move |ev| {
@@ -451,14 +457,17 @@ mod tests {
     #[test]
     fn state_reports_map_and_photo_is_not_a_state() {
         assert_eq!(
-            CameraState::from_report(report::RUNNING as f64, ""),
+            CameraState::from_report(f64::from(report::RUNNING), ""),
             Some(CameraState::Running)
         );
         assert_eq!(
-            CameraState::from_report(report::ERROR as f64, "boom"),
+            CameraState::from_report(f64::from(report::ERROR), "boom"),
             Some(CameraState::Error("boom".into()))
         );
-        assert_eq!(CameraState::from_report(report::PHOTO as f64, "x"), None);
+        assert_eq!(
+            CameraState::from_report(f64::from(report::PHOTO), "x"),
+            None
+        );
         assert_eq!(CameraState::Unavailable.label(), "unavailable");
     }
 

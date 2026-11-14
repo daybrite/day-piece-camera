@@ -1,7 +1,7 @@
 // Copyright © The Daybrite Project
 // SPDX-License-Identifier: MPL-2.0
 
-//! Compile the HarmonyOS camera shim (platform/harmony/native/day_camera.cpp) with the OpenHarmony NDK's clang
+//! Compile the HarmonyOS camera shim (`platform/harmony/native/day_camera.cpp`) with the OpenHarmony NDK's clang
 //! and link the camera and image libraries. Only for a `*-linux-ohos` target with the `arkui`
 //! feature; a no-op everywhere else, so a host build never needs the NDK. The NDK path comes from
 //! `OHOS_NDK_HOME` (the SDK's `native` directory), which the `day` CLI sets when it builds the
