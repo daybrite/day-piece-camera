@@ -2,7 +2,7 @@
 name = "day-piece-camera"
 version = "0.1.1"
 edition = "2024"
-rust-version = "1.89"
+rust-version = "1.100"
 description = "A camera viewfinder with photo capture for Day apps on iOS, Android and HarmonyOS"
 repository = "https://github.com/daybrite/day-piece-camera"
 license = "MPL-2.0"
