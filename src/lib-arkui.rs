@@ -117,6 +117,6 @@ fn release(_backend: &mut ArkUi, h: &AHandle) {
     }
 }
 
-day_pieces::renderer!(day_toolkit_arkui::RENDERERS, ArkUi,
+day_spec::renderer!(day_toolkit_arkui::RENDERERS, ArkUi,
     kind: KIND, props: CameraProps, patch: CameraPatch, make: make, update: update,
-    measure: day_pieces::fill_measure, release: release);
+    measure: day_spec::fill_measure, release: release);

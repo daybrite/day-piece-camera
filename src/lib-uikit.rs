@@ -79,6 +79,6 @@ fn release(_backend: &mut Uikit, h: &Retained<UIView>) {
     unsafe { day_camera_release(ptr) };
 }
 
-day_pieces::renderer!(day_toolkit_uikit::RENDERERS, Uikit,
+day_spec::renderer!(day_toolkit_uikit::RENDERERS, Uikit,
     kind: KIND, props: CameraProps, patch: CameraPatch, make: make, update: update,
-    measure: day_pieces::fill_measure, release: release);
+    measure: day_spec::fill_measure, release: release);
